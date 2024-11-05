@@ -1,22 +1,20 @@
 import 'package:farm_wise/components/home_page.dart';
 import 'package:flutter/material.dart';
+import 'landing_page.dart';
 
 void main() {
-  runApp(const AgricultureApp());
+  runApp(AgricultureApp());
 }
 
 class AgricultureApp extends StatelessWidget {
-  const AgricultureApp({super.key});
+  //authentication check code
+  final bool isAuthenticated = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Agriculture App',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: HomePage(),
+      home: isAuthenticated ? HomePage() : LandingPage(),
     );
   }
 }
