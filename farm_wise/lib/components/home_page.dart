@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
                   _buildNavButton(context, 'Crop Management', CropManagementPage()),
                   _buildNavButton(context, 'Livestock Management', LivestockManagementPage()),
                   _buildNavButton(context, 'Farm Inputs', FarmInputsPage()),
-                  _buildNavButton(context, 'Labor Records', LaborRecordsPage()),
+                  _buildNavButton(context, 'Labor Records', Home()),
                 ],
               ),
               SizedBox(height: 20),
