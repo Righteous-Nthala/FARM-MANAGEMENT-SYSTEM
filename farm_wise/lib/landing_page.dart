@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:animations/animations.dart';
 import 'package:lottie/lottie.dart';
 import 'login_page.dart';
 
@@ -14,7 +13,8 @@ class LandingPage extends StatelessWidget {
             children: [
               // App Title
               Padding(
-                padding: const EdgeInsets.only(top: 50.0, left: 24.0, right: 24.0),
+                padding:
+                    const EdgeInsets.only(top: 50.0, left: 24.0, right: 24.0),
                 child: Text(
                   'FarmWise',
                   style: TextStyle(
@@ -58,20 +58,15 @@ class LandingPage extends StatelessWidget {
                   child: const Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Effortlessly manage all your farm records in one place.',
-                        style: TextStyle(fontSize: 22, color: Colors.black),
-                        textAlign: TextAlign.left,
-                      ),
                       SizedBox(height: 16),
                       Text(
-                        'FarmWise is designed to support the complexities of farm life while offering a simple, user-friendly interface. Whether managing crops or livestock, keep your data safe and accessible.',
+                        'FarmWise is designed to support the complexities of farm life while keeping your data safe and accessible.',
                         style: TextStyle(fontSize: 18, color: Colors.black87),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(height: 16),
                       Text(
-                        'Track crops, livestock, finances, labor, and farm inputs with ease. Record daily operations, monitor your farm’s growth, and analyze trends over time to make informed decisions.',
+                        'Track crops, livestock, finances, labor, and farm inputs plus Recording daily operations with ease.  ',
                         style: TextStyle(fontSize: 18, color: Colors.black87),
                         textAlign: TextAlign.left,
                       ),
@@ -91,7 +86,8 @@ class LandingPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent[10],
-                  padding: EdgeInsets.symmetric(horizontal: 60, vertical: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 60, vertical: 20),
                   shape: RoundedRectangleBorder(
                     side: const BorderSide(color: Colors.green, width: 2),
                     borderRadius: BorderRadius.circular(5),
@@ -104,12 +100,12 @@ class LandingPage extends StatelessWidget {
                       'Get Started',
                       style: TextStyle(fontSize: 24, color: Colors.green),
                     ),
-                    SizedBox(width: 12),
+                    const SizedBox(width: 12),
                     AnimatedArrow(), // Custom animated arrow widget
                   ],
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
             ],
           ),
         ),
