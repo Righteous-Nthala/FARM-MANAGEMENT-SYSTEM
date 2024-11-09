@@ -104,7 +104,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+                          MaterialPageRoute(
+                              builder: (context) => ForgotPasswordPage()),
                         );
                       },
                       icon: const Icon(Icons.help_outline, size: 18),
@@ -114,7 +115,8 @@ class _LoginPageState extends State<LoginPage> {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => RegisterPage()),
+                          MaterialPageRoute(
+                              builder: (context) => RegisterPage()),
                         );
                       },
                       icon: const Icon(Icons.person_add, size: 18),

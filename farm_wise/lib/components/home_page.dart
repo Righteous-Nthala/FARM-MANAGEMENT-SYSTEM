@@ -62,7 +62,7 @@ class HomePage extends StatelessWidget {
                 'FROM FIELD TO TABLE MADE EASY',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.green,
+                  color: Color.fromARGB(255, 41, 209, 47),
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -111,7 +111,7 @@ class HomePage extends StatelessWidget {
           );
         },
         style: OutlinedButton.styleFrom(
-          side: BorderSide(color: Colors.green),
+          side: BorderSide(color: const Color.fromARGB(255, 38, 151, 42)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
           ),
