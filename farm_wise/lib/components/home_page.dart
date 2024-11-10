@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+
 import 'utils/base_page.dart';
 import 'crop_management/files/home.dart';
 import 'livestock_management/files/home.dart';
@@ -6,11 +8,57 @@ import 'farm_inputs/files/home.dart';
 import 'financial_records/files/home.dart';
 import 'labor_records/files/home.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
+  final List<String> _imagePaths = [
+    'images/image12.jpeg',
+    'images/image2.jpeg',
+    'images/image13.jpeg',
+    'images/image4.jpeg',
+    'images/image10.jpeg',
+    'images/image11.jpeg',
+    'images/image7.jpeg',
+    'images/image9.jpeg',
+    'images/image16.jpeg',
+    'images/image17.jpeg',
+    'images/image18.jpeg',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < _imagePaths.length - 1) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final spacing = screenWidth * 0.05; // Dynamic spacing based on screen size
+    final spacing = screenWidth * 0.05;
 
     return BasePage(
       currentIndex: 0, // Set index for Home tab
@@ -19,7 +67,7 @@ class HomePage extends StatelessWidget {
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
-              'images/image6.jpeg', // Replace with your logo image asset
+              'images/image5.jpeg',
               fit: BoxFit.contain,
             ),
           ),
@@ -68,12 +116,24 @@ class HomePage extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
               SizedBox(height: 30),
-              Image.asset(
-                'images/image2.jpeg', // Replace with your farm image asset
-                width: double.infinity,
+
+              // Slideshow with PageView
+              Container(
                 height: 250,
-                fit: BoxFit.cover,
+                width: double.infinity,
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: _imagePaths.length,
+                  itemBuilder: (context, index) {
+                    return Image.asset(
+                      _imagePaths[index],
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                    );
+                  },
+                ),
               ),
+
               SizedBox(height: 30),
 
               // Wrap the main navigation buttons in a Wrap widget
@@ -82,8 +142,10 @@ class HomePage extends StatelessWidget {
                 runSpacing: spacing,
                 alignment: WrapAlignment.center,
                 children: [
-                  _buildNavButton(context, 'Crop Management', CropManagementPage()),
-                  _buildNavButton(context, 'Livestock Management', LivestockManagementPage()),
+                  _buildNavButton(
+                      context, 'Crop Management', CropManagementPage()),
+                  _buildNavButton(context, 'Livestock Management',
+                      LivestockManagementPage()),
                   _buildNavButton(context, 'Farm Inputs', FarmInputsPage()),
                   _buildNavButton(context, 'Labor Records', LaborRecordsPage()),
                 ],
@@ -136,7 +198,8 @@ class HomePage extends StatelessWidget {
           );
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white, // Different color for Financial Records button
+          backgroundColor:
+              Colors.white, // Different color for Financial Records button
           side: BorderSide(color: Colors.green),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
