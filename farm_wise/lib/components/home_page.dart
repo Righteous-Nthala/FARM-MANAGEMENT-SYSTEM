@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'utils/base_page.dart';
 import 'crop_management/files/home.dart';
 import 'livestock_management/files/home.dart';
@@ -18,16 +17,14 @@ class _HomePageState extends State<HomePage> {
   int _currentPage = 0;
 
   final List<String> _imagePaths = [
-    'images/image12.jpeg',
+    'images/image1.jpeg',
     'images/image2.jpeg',
-    'images/image13.jpeg',
     'images/image4.jpeg',
+    'images/image6.jpeg',
     'images/image10.jpeg',
-    'images/image11.jpeg',
-    'images/image7.jpeg',
-    'images/image9.jpeg',
+    'images/image13.jpeg',
     'images/image16.jpeg',
-    'images/image17.jpeg',
+    'images/image14.jpeg',
     'images/image18.jpeg',
   ];
 
