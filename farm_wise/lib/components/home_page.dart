@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-
 import 'utils/base_page.dart';
 import 'crop_management/files/home.dart';
 import 'livestock_management/files/home.dart';
@@ -71,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               fit: BoxFit.contain,
             ),
           ),
-          title: Container(
+          title: SizedBox(
             width: double.infinity,
             height: 40,
             child: Center(
