@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "720570909629",
+    "project_id": "farmwise-93a2e",
+    "storage_bucket": "farmwise-93a2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:720570909629:android:f9d65ba5dcbded239288d4",
+        "android_client_info": {
+          "package_name": "com.example.farm_wise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwJMWsfK1WkLBeF38yMB6HvzsfvjKrE6Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
