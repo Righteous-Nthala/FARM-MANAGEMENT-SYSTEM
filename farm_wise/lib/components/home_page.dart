@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
               fit: BoxFit.contain,
             ),
           ),
-          title: Container(
+          title: SizedBox(
             width: double.infinity,
             height: 40,
             child: Center(
