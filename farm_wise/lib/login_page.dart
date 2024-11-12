@@ -1,9 +1,39 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'forgot_password_page.dart';
 import 'register_page.dart';
 import 'package:farm_wise/components/home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // Text controllers
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  // Login function
+  Future<void> login() async {
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+      // Navigate to home page if login is successful
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle errors (e.g., wrong password, user not found)
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "An error occurred")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,11 +69,12 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
 
-                // Full Name Input with Icon
+                // Email Input with Icon
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Full Name',
-                    prefixIcon: const Icon(Icons.person),
+                    labelText: 'Email',
+                    prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -53,6 +84,7 @@ class LoginPage extends StatelessWidget {
 
                 // Password Input with Icon
                 TextField(
+                  controller: _passwordController,
                   decoration: InputDecoration(
                     labelText: 'Password',
                     prefixIcon: const Icon(Icons.lock),
@@ -96,16 +128,7 @@ class LoginPage extends StatelessWidget {
 
                 // Login Button
                 ElevatedButton(
-                  onPressed: () {
-                    // Authentication logic here
-                    bool isAuthenticated = true;
-                    if (isAuthenticated) {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
-                    }
-                  },
+                  onPressed: login,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     backgroundColor: Colors.green,
@@ -126,4 +149,6 @@ class LoginPage extends StatelessWidget {
       ),
     );
   }
+
+ 
 }
