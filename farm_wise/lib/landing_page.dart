@@ -3,6 +3,8 @@ import 'package:lottie/lottie.dart';
 import 'login_page.dart';
 
 class LandingPage extends StatelessWidget {
+  const LandingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +118,8 @@ class LandingPage extends StatelessWidget {
 
 // Custom animated arrow widget for "Get Started" button
 class AnimatedArrow extends StatefulWidget {
+  const AnimatedArrow({super.key});
+
   @override
   _AnimatedArrowState createState() => _AnimatedArrowState();
 }

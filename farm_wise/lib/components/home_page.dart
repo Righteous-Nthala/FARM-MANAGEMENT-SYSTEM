@@ -8,6 +8,8 @@ import 'financial_records/files/home.dart';
 import 'labor_records/files/home.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -115,7 +117,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 30),
 
               // Slideshow with PageView
-              Container(
+              SizedBox(
                 height: 250,
                 width: double.infinity,
                 child: PageView.builder(

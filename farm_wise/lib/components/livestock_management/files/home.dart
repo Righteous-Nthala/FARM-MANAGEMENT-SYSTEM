@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class LivestockManagementPage extends StatelessWidget {
+  const LivestockManagementPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

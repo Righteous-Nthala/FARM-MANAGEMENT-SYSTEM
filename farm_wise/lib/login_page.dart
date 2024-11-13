@@ -5,6 +5,8 @@ import 'register_page.dart';
 import 'package:farm_wise/components/home_page.dart';
 
 class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }

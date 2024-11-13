@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class rrigationPage extends StatelessWidget {
+  const rrigationPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
