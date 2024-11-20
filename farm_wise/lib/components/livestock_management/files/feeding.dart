@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedingRecordsPage extends StatefulWidget {
+  const FeedingRecordsPage({super.key});
+
   @override
   _FeedingRecordsPageState createState() => _FeedingRecordsPageState();
 }

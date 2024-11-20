@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BreedingPage extends StatefulWidget {
-  const BreedingPage({Key? key}) : super(key: key);
+  const BreedingPage({super.key});
 
   @override
   State<BreedingPage> createState() => _BreedingPageState();

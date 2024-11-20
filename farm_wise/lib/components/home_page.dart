@@ -66,7 +66,7 @@ class _HomePageState extends State<HomePage> {
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
-              'images/image5.jpeg',
+              'images/image4.jpeg',
               fit: BoxFit.contain,
             ),
           ),

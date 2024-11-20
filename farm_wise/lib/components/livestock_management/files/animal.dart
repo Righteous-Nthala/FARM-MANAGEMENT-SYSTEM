@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Animal extends StatefulWidget {
-  const Animal({Key? key}) : super(key: key);
+  const Animal({super.key});
 
   @override
   State<Animal> createState() => _AnimalState();
