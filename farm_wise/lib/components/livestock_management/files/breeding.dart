@@ -1,183 +1,255 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class BreedingPage extends StatefulWidget {
-  const BreedingPage({super.key});
+class BreedingRecordsPage extends StatefulWidget {
+  const BreedingRecordsPage({Key? key}) : super(key: key);
 
   @override
-  State<BreedingPage> createState() => _BreedingPageState();
+  _BreedingRecordsPageState createState() => _BreedingRecordsPageState();
 }
 
-class _BreedingPageState extends State<BreedingPage> {
-  final CollectionReference breedingCollection = FirebaseFirestore.instance.collection('breeding_records');
+class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
+  final CollectionReference breedingRecordsCollection =
+  FirebaseFirestore.instance.collection('breeding_records');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Breeding Records'),
+        title: const Text(
+          'Breeding Records',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         centerTitle: true,
       ),
       body: StreamBuilder(
-        stream: breedingCollection.snapshots(),
+        stream: breedingRecordsCollection.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("No breeding records found", style: TextStyle(fontSize: 18)),
+                  const Text("No breeding records found"),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => _showAddBreedingDialog(),
+                    onPressed: _showAddBreedingRecordDialog,
                     child: const Text("Add Breeding Record"),
                   ),
                 ],
               ),
             );
           } else {
-            return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(
-                columns: const [
-                  DataColumn(label: Text("Animal ID")),
-                  DataColumn(label: Text("Breeding Method")),
-                  DataColumn(label: Text("Partner")),
-                  DataColumn(label: Text("Pregnancy Date")),
-                  DataColumn(label: Text("Delivery Date")),
-                  DataColumn(label: Text("Offspring ID")),
-                  DataColumn(label: Text("Offspring Gender")),
-                  DataColumn(label: Text("Actions")),
-                ],
-                rows: snapshot.data!.docs.map((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
-                  return DataRow(cells: [
-                    DataCell(Text(data['animal_id'] ?? '')),
-                    DataCell(Text(data['breeding_method'] ?? '')),
-                    DataCell(Text(data['partner'] ?? '')),
-                    DataCell(Text(data['pregnancy_date'] ?? '')),
-                    DataCell(Text(data['delivery_date'] ?? '')),
-                    DataCell(Text(data['offspring_id'] ?? '')),
-                    DataCell(Text(data['offspring_gender'] ?? '')),
-                    DataCell(
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () => _showEditBreedingDialog(doc.id, data),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _deleteBreedingRecord(doc.id),
-                          ),
-                        ],
+            return SingleChildScrollView(  // Make the table scrollable vertically
+              child: SingleChildScrollView(  // Allow horizontal scrolling
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columnSpacing: 20,  // Slight increase in column spacing
+                  columns: const [
+                    DataColumn(label: Center(child: Text("ID"))),
+                    DataColumn(label: Center(child: Text("Animal Type"))),
+                    DataColumn(label: Center(child: Text("Breeding Method"))),
+                    DataColumn(label: Center(child: Text("Partner Breed"))),
+                    DataColumn(label: Center(child: Text("Pregnancy Date"))),
+                    DataColumn(label: Center(child: Text("Delivery Date"))),
+                    DataColumn(label: Center(child: Text("Offspring ID"))),
+                    DataColumn(label: Center(child: Text("Offspring Breed"))),
+                    DataColumn(label: Center(child: Text("Offspring Gender"))),
+                    DataColumn(label: Center(child: Text("Offspring Status"))),
+                    DataColumn(label: Center(child: Text("Actions"))),
+                  ],
+                  rows: snapshot.data!.docs.map((doc) {
+                    final data = doc.data() as Map<String, dynamic>;
+                    final String id = data['id'];
+                    final String animalType = data['animal_type'];
+                    final String breedingMethod = data['breeding_method'];
+                    final String partnerBreed = data['partner_breed'];
+                    final String pregnancyDate = data['pregnancy_date'];
+                    final String deliveryDate = data['delivery_date'];
+                    final String offspringId = data['offspring_id'];
+                    final String offspringBreed = data['offspring_breed'];
+                    final String offspringGender = data['offspring_gender'];
+                    final String offspringStatus = data['offspring_status'];
+
+                    return DataRow(
+                      color: MaterialStateProperty.resolveWith(
+                            (states) => Colors.grey[200]!,
                       ),
-                    ),
-                  ]);
-                }).toList(),
+                      cells: [
+                        DataCell(Center(child: Text(id))),
+                        DataCell(Center(child: Text(animalType))),
+                        DataCell(Center(child: Text(breedingMethod))),
+                        DataCell(Center(child: Text(partnerBreed))),
+                        DataCell(Center(child: Text(pregnancyDate))),
+                        DataCell(Center(child: Text(deliveryDate))),
+                        DataCell(Center(child: Text(offspringId))),
+                        DataCell(Center(child: Text(offspringBreed))),
+                        DataCell(Center(child: Text(offspringGender))),
+                        DataCell(Center(child: Text(offspringStatus))),
+                        DataCell(Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.black),
+                              onPressed: () => _showAddBreedingRecordDialog(
+                                action: 'Edit',
+                                docId: doc.id,
+                                id: id,
+                                animalType: animalType,
+                                breedingMethod: breedingMethod,
+                                partnerBreed: partnerBreed,
+                                pregnancyDate: pregnancyDate,
+                                deliveryDate: deliveryDate,
+                                offspringId: offspringId,
+                                offspringBreed: offspringBreed,
+                                offspringGender: offspringGender,
+                                offspringStatus: offspringStatus,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.black),
+                              onPressed: () => _deleteBreedingRecord(doc.id),
+                            ),
+                          ],
+                        )),
+                      ],
+                    );
+                  }).toList(),
+                ),
               ),
             );
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddBreedingDialog(),
+        onPressed: _showAddBreedingRecordDialog,
         child: const Icon(Icons.add),
       ),
     );
   }
 
-  Future<void> _showAddBreedingDialog() async {
-    final TextEditingController animalIdController = TextEditingController();
-    final TextEditingController methodController = TextEditingController();
-    final TextEditingController partnerController = TextEditingController();
-    final TextEditingController pregnancyDateController = TextEditingController();
-    final TextEditingController deliveryDateController = TextEditingController();
-    final TextEditingController offspringIdController = TextEditingController();
-    final TextEditingController genderController = TextEditingController();
+  Future<void> _showAddBreedingRecordDialog({
+    String action = 'Add',
+    String? docId,
+    String id = '',
+    String animalType = '',
+    String breedingMethod = '',
+    String partnerBreed = '',
+    String pregnancyDate = '',
+    String deliveryDate = '',
+    String offspringId = '',
+    String offspringBreed = '',
+    String offspringGender = '',
+    String offspringStatus = '',
+  }) async {
+    final _idController = TextEditingController(text: id);
+    final _animalTypeController = TextEditingController(text: animalType);
+    final _breedingMethodController = TextEditingController(text: breedingMethod);
+    final _partnerBreedController = TextEditingController(text: partnerBreed);
+    final _pregnancyDateController = TextEditingController(text: pregnancyDate);
+    final _deliveryDateController = TextEditingController(text: deliveryDate);
+    final _offspringIdController = TextEditingController(text: offspringId);
+    final _offspringBreedController = TextEditingController(text: offspringBreed);
+    final _offspringGenderController = TextEditingController(text: offspringGender);
+    final _offspringStatusController = TextEditingController(text: offspringStatus);
 
     await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Add Breeding Record"),
+        title: Text("$action Breeding Record"),
         content: SingleChildScrollView(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(controller: animalIdController, decoration: const InputDecoration(labelText: "Animal ID")),
-              TextField(controller: methodController, decoration: const InputDecoration(labelText: "Breeding Method")),
-              TextField(controller: partnerController, decoration: const InputDecoration(labelText: "Partner")),
-              TextField(controller: pregnancyDateController, decoration: const InputDecoration(labelText: "Pregnancy Date")),
-              TextField(controller: deliveryDateController, decoration: const InputDecoration(labelText: "Delivery Date")),
-              TextField(controller: offspringIdController, decoration: const InputDecoration(labelText: "Offspring ID")),
-              TextField(controller: genderController, decoration: const InputDecoration(labelText: "Offspring Gender")),
+              TextField(
+                controller: _idController,
+                decoration: const InputDecoration(labelText: "ID"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _animalTypeController,
+                decoration: const InputDecoration(labelText: "Animal Type"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _breedingMethodController,
+                decoration: const InputDecoration(labelText: "Breeding Method"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _partnerBreedController,
+                decoration: const InputDecoration(labelText: "Partner Breed"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _pregnancyDateController,
+                decoration: const InputDecoration(labelText: "Pregnancy Date"),
+              ),
+              TextField(
+                controller: _deliveryDateController,
+                decoration: const InputDecoration(labelText: "Delivery Date"),
+              ),
+              TextField(
+                controller: _offspringIdController,
+                decoration: const InputDecoration(labelText: "Offspring ID"),
+              ),
+              TextField(
+                controller: _offspringBreedController,
+                decoration: const InputDecoration(labelText: "Offspring Breed"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _offspringGenderController,
+                decoration: const InputDecoration(labelText: "Offspring Gender"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: _offspringStatusController,
+                decoration: const InputDecoration(labelText: "Offspring Status"),
+                textCapitalization: TextCapitalization.words,
+              ),
             ],
           ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
-          ElevatedButton(
-            onPressed: () {
-              _addBreedingRecord({
-                'animal_id': animalIdController.text,
-                'breeding_method': methodController.text,
-                'partner': partnerController.text,
-                'pregnancy_date': pregnancyDateController.text,
-                'delivery_date': deliveryDateController.text,
-                'offspring_id': offspringIdController.text,
-                'offspring_gender': genderController.text,
-              });
-              Navigator.pop(context);
-            },
-            child: const Text("Add"),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
           ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _showEditBreedingDialog(String docId, Map<String, dynamic> data) async {
-    final TextEditingController animalIdController = TextEditingController(text: data['animal_id']);
-    final TextEditingController methodController = TextEditingController(text: data['breeding_method']);
-    final TextEditingController partnerController = TextEditingController(text: data['partner']);
-    final TextEditingController pregnancyDateController = TextEditingController(text: data['pregnancy_date']);
-    final TextEditingController deliveryDateController = TextEditingController(text: data['delivery_date']);
-    final TextEditingController offspringIdController = TextEditingController(text: data['offspring_id']);
-    final TextEditingController genderController = TextEditingController(text: data['offspring_gender']);
-
-    await showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Edit Breeding Record"),
-        content: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(controller: animalIdController, decoration: const InputDecoration(labelText: "Animal ID")),
-              TextField(controller: methodController, decoration: const InputDecoration(labelText: "Breeding Method")),
-              TextField(controller: partnerController, decoration: const InputDecoration(labelText: "Partner")),
-              TextField(controller: pregnancyDateController, decoration: const InputDecoration(labelText: "Pregnancy Date")),
-              TextField(controller: deliveryDateController, decoration: const InputDecoration(labelText: "Delivery Date")),
-              TextField(controller: offspringIdController, decoration: const InputDecoration(labelText: "Offspring ID")),
-              TextField(controller: genderController, decoration: const InputDecoration(labelText: "Offspring Gender")),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
           ElevatedButton(
-            onPressed: () {
-              _editBreedingRecord(docId, {
-                'animal_id': animalIdController.text,
-                'breeding_method': methodController.text,
-                'partner': partnerController.text,
-                'pregnancy_date': pregnancyDateController.text,
-                'delivery_date': deliveryDateController.text,
-                'offspring_id': offspringIdController.text,
-                'offspring_gender': genderController.text,
-              });
-              Navigator.pop(context);
+            onPressed: () async {
+              Navigator.pop(context); // Close the dialog first
+
+              // Collecting values from the controllers
+              String id = _capitalizeFirstLetter(_idController.text.trim());
+              String animalType = _capitalizeFirstLetter(_animalTypeController.text.trim());
+              String breedingMethod = _capitalizeFirstLetter(_breedingMethodController.text.trim());
+              String partnerBreed = _capitalizeFirstLetter(_partnerBreedController.text.trim());
+              String pregnancyDate = _pregnancyDateController.text.trim();
+              String deliveryDate = _deliveryDateController.text.trim();
+              String offspringId = _offspringIdController.text.trim();
+              String offspringBreed = _capitalizeFirstLetter(_offspringBreedController.text.trim());
+              String offspringGender = _capitalizeFirstLetter(_offspringGenderController.text.trim());
+              String offspringStatus = _capitalizeFirstLetter(_offspringStatusController.text.trim());
+
+              bool duplicateExists = await _checkForDuplicateBreedingRecord(
+                  id, animalType, breedingMethod, partnerBreed, pregnancyDate,
+                  deliveryDate, offspringId, offspringBreed, offspringGender, offspringStatus, docId
+              );
+
+              if (duplicateExists) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("This record already exists")),
+                );
+                return;
+              }
+
+              if (action == 'Add') {
+                await _addBreedingRecord(id, animalType, breedingMethod, partnerBreed, pregnancyDate, deliveryDate, offspringId, offspringBreed, offspringGender, offspringStatus);
+              } else {
+                await _editBreedingRecord(
+                    docId!, id, animalType, breedingMethod, partnerBreed, pregnancyDate, deliveryDate, offspringId, offspringBreed, offspringGender, offspringStatus);
+              }
             },
             child: const Text("Save"),
           ),
@@ -186,15 +258,73 @@ class _BreedingPageState extends State<BreedingPage> {
     );
   }
 
-  Future<void> _addBreedingRecord(Map<String, dynamic> data) async {
-    await breedingCollection.add(data);
+  String _capitalizeFirstLetter(String input) {
+    if (input.isEmpty) return input;
+    return input[0].toUpperCase() + input.substring(1);
   }
 
-  Future<void> _editBreedingRecord(String docId, Map<String, dynamic> data) async {
-    await breedingCollection.doc(docId).update(data);
+  Future<void> _addBreedingRecord(
+      String id, String animalType, String breedingMethod, String partnerBreed,
+      String pregnancyDate, String deliveryDate, String offspringId, String offspringBreed,
+      String offspringGender, String offspringStatus) async {
+    await breedingRecordsCollection.add({
+      'id': id,
+      'animal_type': animalType,
+      'breeding_method': breedingMethod,
+      'partner_breed': partnerBreed,
+      'pregnancy_date': pregnancyDate,
+      'delivery_date': deliveryDate,
+      'offspring_id': offspringId,
+      'offspring_breed': offspringBreed,
+      'offspring_gender': offspringGender,
+      'offspring_status': offspringStatus,
+    });
+  }
+
+  Future<void> _editBreedingRecord(
+      String docId, String id, String animalType, String breedingMethod, String partnerBreed,
+      String pregnancyDate, String deliveryDate, String offspringId, String offspringBreed,
+      String offspringGender, String offspringStatus) async {
+    await breedingRecordsCollection.doc(docId).update({
+      'id': id,
+      'animal_type': animalType,
+      'breeding_method': breedingMethod,
+      'partner_breed': partnerBreed,
+      'pregnancy_date': pregnancyDate,
+      'delivery_date': deliveryDate,
+      'offspring_id': offspringId,
+      'offspring_breed': offspringBreed,
+      'offspring_gender': offspringGender,
+      'offspring_status': offspringStatus,
+    });
   }
 
   Future<void> _deleteBreedingRecord(String docId) async {
-    await breedingCollection.doc(docId).delete();
+    await breedingRecordsCollection.doc(docId).delete();
+  }
+
+  Future<bool> _checkForDuplicateBreedingRecord(
+      String id, String animalType, String breedingMethod, String partnerBreed,
+      String pregnancyDate, String deliveryDate, String offspringId, String offspringBreed,
+      String offspringGender, String offspringStatus, String? docId) async {
+    final querySnapshot = await breedingRecordsCollection
+        .where('id', isEqualTo: id)
+        .where('animal_type', isEqualTo: animalType)
+        .where('breeding_method', isEqualTo: breedingMethod)
+        .where('partner_breed', isEqualTo: partnerBreed)
+        .where('pregnancy_date', isEqualTo: pregnancyDate)
+        .where('delivery_date', isEqualTo: deliveryDate)
+        .where('offspring_id', isEqualTo: offspringId)
+        .where('offspring_breed', isEqualTo: offspringBreed)
+        .where('offspring_gender', isEqualTo: offspringGender)
+        .where('offspring_status', isEqualTo: offspringStatus)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      if (doc.id != docId) {
+        return true; // Duplicate found
+      }
+    }
+    return false; // No duplicates
   }
 }

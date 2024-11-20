@@ -1,14 +1,15 @@
+import 'package:farm_wise/components/livestock_management/files/specificproduct.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Products extends StatefulWidget {
-  const Products({super.key});
+class Product extends StatefulWidget {
+  const Product({Key? key}) : super(key: key);
 
   @override
-  State<Products> createState() => _ProductPageState();
+  State<Product> createState() => _ProductState();
 }
 
-class _ProductPageState extends State<Products> {
+class _ProductState extends State<Product> {
   final CollectionReference productsCollection =
   FirebaseFirestore.instance.collection('products');
 
@@ -23,7 +24,7 @@ class _ProductPageState extends State<Products> {
         centerTitle: true,
       ),
       body: StreamBuilder(
-        stream: productsCollection.snapshots(),
+        stream: productsCollection.orderBy('name').snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
@@ -71,6 +72,15 @@ class _ProductPageState extends State<Products> {
                         ),
                       ],
                     ),
+                    onTap: () {
+                      // Navigate to the Generic Details Page with the product ID
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Specificproduct(productName: formattedName, productId: doc.id),
+                        ),
+                      );
+                    },
                   ),
                 );
               }).toList(),
@@ -94,26 +104,63 @@ class _ProductPageState extends State<Products> {
 
     await showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Add Product"),
-        content: TextField(
-          onChanged: (value) => productName = value,
-          decoration: const InputDecoration(labelText: "Product Name"),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _addProduct(productName);
-              Navigator.pop(context);
-            },
-            child: const Text("Add"),
-          ),
-        ],
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text("Add Product"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  onChanged: (value) => productName = value,
+                  decoration: const InputDecoration(labelText: "Product Name"),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  Navigator.pop(context); // Close the dialog immediately
+                  if (productName.isNotEmpty) {
+                    final productExists = await _checkProductExists(productName);
+                    if (productExists) {
+                      // Show the message if the product already exists
+                      _showProductExistsMessage(productName);
+                    } else {
+                      await _addProduct(productName);
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Product name cannot be empty")),
+                    );
+                  }
+                },
+                child: const Text("Add"),
+              ),
+            ],
+          );
+        },
       ),
+    );
+  }
+
+  Future<bool> _checkProductExists(String name) async {
+    final querySnapshot = await productsCollection
+        .where('name', isEqualTo: name)
+        .get();
+    return querySnapshot.docs.isNotEmpty;
+  }
+
+  Future<void> _addProduct(String name) async {
+    await productsCollection.add({
+      'name': name,
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Product added successfully")),
     );
   }
 
@@ -124,10 +171,15 @@ class _ProductPageState extends State<Products> {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text("Edit Product"),
-        content: TextField(
-          controller: TextEditingController(text: productName),
-          onChanged: (value) => productName = value,
-          decoration: const InputDecoration(labelText: "Product Name"),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: TextEditingController(text: productName),
+              onChanged: (value) => productName = value,
+              decoration: const InputDecoration(labelText: "Product Name"),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -146,14 +198,6 @@ class _ProductPageState extends State<Products> {
     );
   }
 
-  Future<void> _addProduct(String name) async {
-    if (name.isNotEmpty) {
-      await productsCollection.add({
-        'name': name,
-      });
-    }
-  }
-
   Future<void> _editProduct(String docId, String name) async {
     if (name.isNotEmpty) {
       await productsCollection.doc(docId).update({
@@ -164,5 +208,24 @@ class _ProductPageState extends State<Products> {
 
   Future<void> _deleteProduct(String docId) async {
     await productsCollection.doc(docId).delete();
+  }
+
+  // Method to show the "Product already exists" message centered on the screen
+  void _showProductExistsMessage(String productName) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Error"),
+        content: Text('$productName already exists'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+            },
+            child: const Text("OK"),
+          ),
+        ],
+      ),
+    );
   }
 }
