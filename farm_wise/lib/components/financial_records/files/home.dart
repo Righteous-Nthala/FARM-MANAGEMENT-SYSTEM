@@ -57,7 +57,7 @@ class FinancialRecordsPage extends StatelessWidget {
                 color: Colors.white,
                 child: const Text(
                   'Analysis',
-                  style: TextStyle(color: Colors.bla, fontSize: 18),
+                  style: TextStyle(color: Colors.black, fontSize: 18),
                 ),
               ),
             ),
