@@ -21,13 +21,22 @@ class _HomePageState extends State<HomePage> {
   final List<String> _imagePaths = [
     'images/image1.jpeg',
     'images/image2.jpeg',
+    'images/image3.jpeg',
     'images/image4.jpeg',
+    'images/image5.jpeg',
     'images/image6.jpeg',
+    'images/image7.jpeg',
+    'images/image8.jpeg',
+    'images/image9.jpeg',
     'images/image10.jpeg',
+    'images/image11.jpeg',
+    'images/image12.jpeg',
     'images/image13.jpeg',
-    'images/image16.jpeg',
     'images/image14.jpeg',
-    'images/image18.jpeg',
+    'images/image15.jpeg',
+    'images/image16.jpeg',
+    'images/image17.jpeg',
+    'images/image19.jpeg',
   ];
 
   @override
@@ -66,7 +75,7 @@ class _HomePageState extends State<HomePage> {
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
-              'images/image4.jpeg',
+              'images/image17.jpeg',
               fit: BoxFit.contain,
             ),
           ),
@@ -118,7 +127,7 @@ class _HomePageState extends State<HomePage> {
 
               // Slideshow with PageView
               SizedBox(
-                height: 250,
+                height: 200,
                 width: double.infinity,
                 child: PageView.builder(
                   controller: _pageController,
@@ -162,8 +171,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNavButton(BuildContext context, String title, Widget page) {
     return SizedBox(
-      width: 180,
-      height: 80,
+      width: 160,
+      height: 70,
       child: OutlinedButton(
         onPressed: () {
           Navigator.push(
@@ -187,8 +196,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFinancialRecordsButton(BuildContext context) {
     return SizedBox(
-      width: 380,
-      height: 80,
+      width: 340,
+      height: 70,
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
