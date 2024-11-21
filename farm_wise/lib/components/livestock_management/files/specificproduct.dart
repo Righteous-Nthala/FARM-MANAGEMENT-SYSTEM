@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class Specificproduct extends StatefulWidget {
   final String productId;
   final String productName;
-  const Specificproduct({Key? key, required this.productId, required this.productName}) : super(key: key);
+  const Specificproduct({super.key, required this.productId, required this.productName});
 
   @override
   _SpecificproductState createState() => _SpecificproductState();
@@ -71,7 +71,7 @@ class _SpecificproductState extends State<Specificproduct> {
                   final String damages = data['damages'].toString();
 
                   return DataRow(
-                    color: MaterialStateProperty.all(Colors.grey[200]), // Gray background for rows
+                    color: WidgetStateProperty.all(Colors.grey[200]), // Gray background for rows
                     cells: [
                       DataCell(Center(child: Text(date))),
                       DataCell(Center(child: Text(totalAmount))),

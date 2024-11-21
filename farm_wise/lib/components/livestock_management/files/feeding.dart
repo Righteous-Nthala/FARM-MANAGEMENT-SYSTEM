@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FeedingRecordsPage extends StatefulWidget {
-  const FeedingRecordsPage({Key? key}) : super(key: key);
+  const FeedingRecordsPage({super.key});
 
   @override
   _FeedingRecordsPageState createState() => _FeedingRecordsPageState();
@@ -64,7 +64,7 @@ class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
                     final String animal = data['animal'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[200]!,
                       ),
                       cells: [
@@ -122,12 +122,12 @@ class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
     String labor = '',
     String animal = '',
   }) async {
-    final _dateController = TextEditingController(text: date);
-    final _timeController = TextEditingController(text: time);
-    final _foodTypeController = TextEditingController(text: foodType);
-    final _amountController = TextEditingController(text: amount);
-    final _laborController = TextEditingController(text: labor);
-    final _animalController = TextEditingController(text: animal);
+    final dateController = TextEditingController(text: date);
+    final timeController = TextEditingController(text: time);
+    final foodTypeController = TextEditingController(text: foodType);
+    final amountController = TextEditingController(text: amount);
+    final laborController = TextEditingController(text: labor);
+    final animalController = TextEditingController(text: animal);
 
     await showDialog(
       context: context,
@@ -138,27 +138,27 @@ class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _dateController,
+                controller: dateController,
                 decoration: const InputDecoration(labelText: "Date"),
               ),
               TextField(
-                controller: _timeController,
+                controller: timeController,
                 decoration: const InputDecoration(labelText: "Time"),
               ),
               TextField(
-                controller: _foodTypeController,
+                controller: foodTypeController,
                 decoration: const InputDecoration(labelText: "Food Type"),
               ),
               TextField(
-                controller: _amountController,
+                controller: amountController,
                 decoration: const InputDecoration(labelText: "Amount"),
               ),
               TextField(
-                controller: _laborController,
+                controller: laborController,
                 decoration: const InputDecoration(labelText: "Labor"),
               ),
               TextField(
-                controller: _animalController,
+                controller: animalController,
                 decoration: const InputDecoration(labelText: "Animal"),
               ),
             ],
@@ -174,12 +174,12 @@ class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String date = _dateController.text.trim();
-              String time = _timeController.text.trim();
-              String foodType = _foodTypeController.text.trim();
-              String amount = _amountController.text.trim();
-              String labor = _laborController.text.trim();
-              String animal = _animalController.text.trim();
+              String date = dateController.text.trim();
+              String time = timeController.text.trim();
+              String foodType = foodTypeController.text.trim();
+              String amount = amountController.text.trim();
+              String labor = laborController.text.trim();
+              String animal = animalController.text.trim();
 
               if (date.isEmpty || time.isEmpty || foodType.isEmpty ||
                   amount.isEmpty || labor.isEmpty || animal.isEmpty) {

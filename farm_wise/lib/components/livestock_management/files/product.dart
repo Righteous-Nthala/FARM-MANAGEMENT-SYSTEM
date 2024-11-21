@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Product extends StatefulWidget {
-  const Product({Key? key}) : super(key: key);
+  const Product({super.key});
 
   @override
   State<Product> createState() => _ProductState();

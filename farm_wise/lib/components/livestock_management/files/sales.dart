@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SalesRecordsPage extends StatefulWidget {
-  const SalesRecordsPage({Key? key}) : super(key: key);
+  const SalesRecordsPage({super.key});
 
   @override
   _SalesRecordsPageState createState() => _SalesRecordsPageState();
@@ -64,7 +64,7 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
                     final String date = data['date'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[200]!,
                       ),
                       cells: [
@@ -120,11 +120,11 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
     String customer = '',
     String date = '',
   }) async {
-    final _animalProductController = TextEditingController(text: animalProduct);
-    final _quantityController = TextEditingController(text: quantity);
-    final _totalIncomeController = TextEditingController(text: totalIncome);
-    final _customerController = TextEditingController(text: customer);
-    final _dateController = TextEditingController(text: date);
+    final animalProductController = TextEditingController(text: animalProduct);
+    final quantityController = TextEditingController(text: quantity);
+    final totalIncomeController = TextEditingController(text: totalIncome);
+    final customerController = TextEditingController(text: customer);
+    final dateController = TextEditingController(text: date);
 
     await showDialog(
       context: context,
@@ -135,27 +135,27 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _animalProductController,
+                controller: animalProductController,
                 decoration: const InputDecoration(labelText: "Animal/Product"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _quantityController,
+                controller: quantityController,
                 decoration: const InputDecoration(labelText: "Quantity"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _totalIncomeController,
+                controller: totalIncomeController,
                 decoration: const InputDecoration(labelText: "Total Income (Mkw)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _customerController,
+                controller: customerController,
                 decoration: const InputDecoration(labelText: "Customer"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _dateController,
+                controller: dateController,
                 decoration: const InputDecoration(labelText: "Date"),
               ),
             ],
@@ -171,11 +171,11 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String animalProduct = _capitalizeFirstLetter(_animalProductController.text.trim());
-              int quantity = int.tryParse(_quantityController.text.trim()) ?? 0;
-              double totalIncome = double.tryParse(_totalIncomeController.text.trim()) ?? 0.0;
-              String customer = _capitalizeFirstLetter(_customerController.text.trim());
-              String date = _dateController.text.trim();
+              String animalProduct = _capitalizeFirstLetter(animalProductController.text.trim());
+              int quantity = int.tryParse(quantityController.text.trim()) ?? 0;
+              double totalIncome = double.tryParse(totalIncomeController.text.trim()) ?? 0.0;
+              String customer = _capitalizeFirstLetter(customerController.text.trim());
+              String date = dateController.text.trim();
 
               if (action == 'Add') {
                 await _addSalesRecord(animalProduct, quantity, totalIncome, customer, date);

@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class AnimalTypePage extends StatefulWidget {
   final String animalName;
 
-  const AnimalTypePage({Key? key, required this.animalName}) : super(key: key);
+  const AnimalTypePage({super.key, required this.animalName});
 
   @override
   State<AnimalTypePage> createState() => _AnimalTypePageState();
@@ -65,7 +65,7 @@ class _AnimalTypePageState extends State<AnimalTypePage> {
                     final data = doc.data() as Map<String, dynamic>;
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                               (states) => index % 2 == 0
                               ? Colors.grey[200]
                               : Colors.white),

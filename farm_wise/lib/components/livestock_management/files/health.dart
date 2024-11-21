@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ParasiteDiseaseRecordsPage extends StatefulWidget {
-  const ParasiteDiseaseRecordsPage({Key? key}) : super(key: key);
+  const ParasiteDiseaseRecordsPage({super.key});
 
   @override
   _ParasiteDiseaseRecordsPageState createState() =>
@@ -64,7 +64,7 @@ class _ParasiteDiseaseRecordsPageState
                     final String animalId = data['animal_id'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[200]!,
                       ),
                       cells: [
@@ -117,10 +117,10 @@ class _ParasiteDiseaseRecordsPageState
     String dateObserved = '',
     String animalId = '',
   }) async {
-    final _parasiteDiseaseController = TextEditingController(text: parasiteDisease);
-    final _severityController = TextEditingController(text: severity);
-    final _dateObservedController = TextEditingController(text: dateObserved);
-    final _animalIdController = TextEditingController(text: animalId);
+    final parasiteDiseaseController = TextEditingController(text: parasiteDisease);
+    final severityController = TextEditingController(text: severity);
+    final dateObservedController = TextEditingController(text: dateObserved);
+    final animalIdController = TextEditingController(text: animalId);
 
     await showDialog(
       context: context,
@@ -131,21 +131,21 @@ class _ParasiteDiseaseRecordsPageState
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _parasiteDiseaseController,
+                controller: parasiteDiseaseController,
                 decoration: const InputDecoration(labelText: "Parasite/Disease"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _severityController,
+                controller: severityController,
                 decoration: const InputDecoration(labelText: "Severity"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _dateObservedController,
+                controller: dateObservedController,
                 decoration: const InputDecoration(labelText: "Date Observed"),
               ),
               TextField(
-                controller: _animalIdController,
+                controller: animalIdController,
                 decoration: const InputDecoration(labelText: "Animal ID"),
               ),
             ],
@@ -161,10 +161,10 @@ class _ParasiteDiseaseRecordsPageState
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String parasiteDisease = _capitalizeFirstLetter(_parasiteDiseaseController.text.trim());
-              String severity = _capitalizeFirstLetter(_severityController.text.trim());
-              String dateObserved = _dateObservedController.text.trim();
-              String animalId = _animalIdController.text.trim();
+              String parasiteDisease = _capitalizeFirstLetter(parasiteDiseaseController.text.trim());
+              String severity = _capitalizeFirstLetter(severityController.text.trim());
+              String dateObserved = dateObservedController.text.trim();
+              String animalId = animalIdController.text.trim();
 
               bool duplicateExists = await _checkForDuplicateParasiteDiseaseRecord(
                   parasiteDisease, severity, dateObserved, animalId, docId

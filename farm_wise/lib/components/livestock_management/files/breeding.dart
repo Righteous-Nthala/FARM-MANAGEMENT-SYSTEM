@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BreedingRecordsPage extends StatefulWidget {
-  const BreedingRecordsPage({Key? key}) : super(key: key);
+  const BreedingRecordsPage({super.key});
 
   @override
   _BreedingRecordsPageState createState() => _BreedingRecordsPageState();
@@ -72,7 +72,7 @@ class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
                     final String offspringStatus = data['offspring_status'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[200]!,
                       ),
                       cells: [
@@ -142,16 +142,16 @@ class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
     String offspringGender = '',
     String offspringStatus = '',
   }) async {
-    final _idController = TextEditingController(text: id);
-    final _animalTypeController = TextEditingController(text: animalType);
-    final _breedingMethodController = TextEditingController(text: breedingMethod);
-    final _partnerBreedController = TextEditingController(text: partnerBreed);
-    final _pregnancyDateController = TextEditingController(text: pregnancyDate);
-    final _deliveryDateController = TextEditingController(text: deliveryDate);
-    final _offspringIdController = TextEditingController(text: offspringId);
-    final _offspringBreedController = TextEditingController(text: offspringBreed);
-    final _offspringGenderController = TextEditingController(text: offspringGender);
-    final _offspringStatusController = TextEditingController(text: offspringStatus);
+    final idController = TextEditingController(text: id);
+    final animalTypeController = TextEditingController(text: animalType);
+    final breedingMethodController = TextEditingController(text: breedingMethod);
+    final partnerBreedController = TextEditingController(text: partnerBreed);
+    final pregnancyDateController = TextEditingController(text: pregnancyDate);
+    final deliveryDateController = TextEditingController(text: deliveryDate);
+    final offspringIdController = TextEditingController(text: offspringId);
+    final offspringBreedController = TextEditingController(text: offspringBreed);
+    final offspringGenderController = TextEditingController(text: offspringGender);
+    final offspringStatusController = TextEditingController(text: offspringStatus);
 
     await showDialog(
       context: context,
@@ -162,49 +162,49 @@ class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _idController,
+                controller: idController,
                 decoration: const InputDecoration(labelText: "ID"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _animalTypeController,
+                controller: animalTypeController,
                 decoration: const InputDecoration(labelText: "Animal Type"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _breedingMethodController,
+                controller: breedingMethodController,
                 decoration: const InputDecoration(labelText: "Breeding Method"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _partnerBreedController,
+                controller: partnerBreedController,
                 decoration: const InputDecoration(labelText: "Partner Breed"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _pregnancyDateController,
+                controller: pregnancyDateController,
                 decoration: const InputDecoration(labelText: "Pregnancy Date"),
               ),
               TextField(
-                controller: _deliveryDateController,
+                controller: deliveryDateController,
                 decoration: const InputDecoration(labelText: "Delivery Date"),
               ),
               TextField(
-                controller: _offspringIdController,
+                controller: offspringIdController,
                 decoration: const InputDecoration(labelText: "Offspring ID"),
               ),
               TextField(
-                controller: _offspringBreedController,
+                controller: offspringBreedController,
                 decoration: const InputDecoration(labelText: "Offspring Breed"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _offspringGenderController,
+                controller: offspringGenderController,
                 decoration: const InputDecoration(labelText: "Offspring Gender"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _offspringStatusController,
+                controller: offspringStatusController,
                 decoration: const InputDecoration(labelText: "Offspring Status"),
                 textCapitalization: TextCapitalization.words,
               ),
@@ -221,16 +221,16 @@ class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String id = _capitalizeFirstLetter(_idController.text.trim());
-              String animalType = _capitalizeFirstLetter(_animalTypeController.text.trim());
-              String breedingMethod = _capitalizeFirstLetter(_breedingMethodController.text.trim());
-              String partnerBreed = _capitalizeFirstLetter(_partnerBreedController.text.trim());
-              String pregnancyDate = _pregnancyDateController.text.trim();
-              String deliveryDate = _deliveryDateController.text.trim();
-              String offspringId = _offspringIdController.text.trim();
-              String offspringBreed = _capitalizeFirstLetter(_offspringBreedController.text.trim());
-              String offspringGender = _capitalizeFirstLetter(_offspringGenderController.text.trim());
-              String offspringStatus = _capitalizeFirstLetter(_offspringStatusController.text.trim());
+              String id = _capitalizeFirstLetter(idController.text.trim());
+              String animalType = _capitalizeFirstLetter(animalTypeController.text.trim());
+              String breedingMethod = _capitalizeFirstLetter(breedingMethodController.text.trim());
+              String partnerBreed = _capitalizeFirstLetter(partnerBreedController.text.trim());
+              String pregnancyDate = pregnancyDateController.text.trim();
+              String deliveryDate = deliveryDateController.text.trim();
+              String offspringId = offspringIdController.text.trim();
+              String offspringBreed = _capitalizeFirstLetter(offspringBreedController.text.trim());
+              String offspringGender = _capitalizeFirstLetter(offspringGenderController.text.trim());
+              String offspringStatus = _capitalizeFirstLetter(offspringStatusController.text.trim());
 
               bool duplicateExists = await _checkForDuplicateBreedingRecord(
                   id, animalType, breedingMethod, partnerBreed, pregnancyDate,

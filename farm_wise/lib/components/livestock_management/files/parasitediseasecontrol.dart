@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ParasiteDiseaseControlPage extends StatefulWidget {
-  const ParasiteDiseaseControlPage({Key? key}) : super(key: key);
+  const ParasiteDiseaseControlPage({super.key});
 
   @override
   _ParasiteDiseaseControlPageState createState() => _ParasiteDiseaseControlPageState();
@@ -61,7 +61,7 @@ class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage>
                     final String animalId = data['animal_id'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[200],
                       ),
                       cells: [
@@ -114,10 +114,10 @@ class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage>
     String veterinary = '',
     String animalId = '',
   }) async {
-    final _treatmentTypeController = TextEditingController(text: treatmentType);
-    final _targetController = TextEditingController(text: target);
-    final _veterinaryController = TextEditingController(text: veterinary);
-    final _animalIdController = TextEditingController(text: animalId);
+    final treatmentTypeController = TextEditingController(text: treatmentType);
+    final targetController = TextEditingController(text: target);
+    final veterinaryController = TextEditingController(text: veterinary);
+    final animalIdController = TextEditingController(text: animalId);
 
     await showDialog(
       context: context,
@@ -128,22 +128,22 @@ class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _treatmentTypeController,
+                controller: treatmentTypeController,
                 decoration: const InputDecoration(labelText: "Treatment Type"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _targetController,
+                controller: targetController,
                 decoration: const InputDecoration(labelText: "Target"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _veterinaryController,
+                controller: veterinaryController,
                 decoration: const InputDecoration(labelText: "Veterinary"),
                 textCapitalization: TextCapitalization.words,
               ),
               TextField(
-                controller: _animalIdController,
+                controller: animalIdController,
                 decoration: const InputDecoration(labelText: "Animal + ID"),
               ),
             ],
@@ -159,10 +159,10 @@ class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage>
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String treatmentType = _capitalizeFirstLetter(_treatmentTypeController.text.trim());
-              String target = _capitalizeFirstLetter(_targetController.text.trim());
-              String veterinary = _capitalizeFirstLetter(_veterinaryController.text.trim());
-              String animalId = _animalIdController.text.trim();
+              String treatmentType = _capitalizeFirstLetter(treatmentTypeController.text.trim());
+              String target = _capitalizeFirstLetter(targetController.text.trim());
+              String veterinary = _capitalizeFirstLetter(veterinaryController.text.trim());
+              String animalId = animalIdController.text.trim();
 
               if (action == 'Add') {
                 await _addControlRecord(treatmentType, target, veterinary, animalId);
