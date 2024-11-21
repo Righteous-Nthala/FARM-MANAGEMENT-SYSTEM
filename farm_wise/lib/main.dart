@@ -14,6 +14,8 @@ class AgricultureApp extends StatelessWidget {
   //authentication check code
   final bool isAuthenticated = false;
 
+  const AgricultureApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
