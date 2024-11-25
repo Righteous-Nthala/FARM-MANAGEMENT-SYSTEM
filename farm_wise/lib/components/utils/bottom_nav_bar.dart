@@ -24,7 +24,7 @@ class BottomNavBar extends StatelessWidget {
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => NotificationsPage()),
+          MaterialPageRoute(builder: (context) => RemindersPage()),
         );
         break;
       case 2:
