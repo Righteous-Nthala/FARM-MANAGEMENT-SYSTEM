@@ -18,16 +18,35 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+
+  final List<Map<String, dynamic>> _searchableItems = [
+    {'title': 'Crop Management', 'page': CropManagementPage()},
+    {'title': 'Livestock Management', 'page': LivestockManagementPage()},
+    {'title': 'Farm Inputs', 'page': FarmInputsPage()},
+    {'title': 'Labor Records', 'page': Home()},
+  ];
+
   final List<String> _imagePaths = [
     'images/image1.jpeg',
     'images/image2.jpeg',
+    'images/image3.jpeg',
     'images/image4.jpeg',
+    'images/image5.jpeg',
     'images/image6.jpeg',
+    'images/image7.jpeg',
+    'images/image8.jpeg',
+    'images/image9.jpeg',
     'images/image10.jpeg',
+    'images/image11.jpeg',
+    'images/image12.jpeg',
     'images/image13.jpeg',
-    'images/image16.jpeg',
     'images/image14.jpeg',
-    'images/image18.jpeg',
+    'images/image15.jpeg',
+    'images/image16.jpeg',
+    'images/image17.jpeg',
+    'images/image19.jpeg',
   ];
 
   @override
@@ -51,13 +70,19 @@ class _HomePageState extends State<HomePage> {
   @override
   void dispose() {
     _pageController.dispose();
+    _searchController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final spacing = screenWidth * 0.05;
+    final filteredItems = _searchQuery.isEmpty
+        ? _searchableItems
+        : _searchableItems
+            .where((item) => item['title']
+                .toLowerCase()
+                .contains(_searchQuery.toLowerCase()))
+            .toList();
 
     return BasePage(
       currentIndex: 0, // Set index for Home tab
@@ -66,25 +91,29 @@ class _HomePageState extends State<HomePage> {
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Image.asset(
-              'images/image5.jpeg',
+              'images/image17.jpeg',
               fit: BoxFit.contain,
             ),
           ),
           title: SizedBox(
             width: double.infinity,
             height: 40,
-            child: Center(
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search',
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: EdgeInsets.symmetric(vertical: 8),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
-                  ),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+              decoration: InputDecoration(
+                hintText: 'Search',
+                prefixIcon: Icon(Icons.search, color: Colors.grey),
+                filled: true,
+                fillColor: Colors.white,
+                contentPadding: EdgeInsets.symmetric(vertical: 8),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide.none,
                 ),
               ),
             ),
@@ -118,7 +147,7 @@ class _HomePageState extends State<HomePage> {
 
               // Slideshow with PageView
               SizedBox(
-                height: 250,
+                height: 200,
                 width: double.infinity,
                 child: PageView.builder(
                   controller: _pageController,
@@ -135,20 +164,15 @@ class _HomePageState extends State<HomePage> {
 
               SizedBox(height: 30),
 
-              // Wrap the main navigation buttons in a Wrap widget
               Wrap(
-                spacing: spacing,
-                runSpacing: spacing,
+                spacing: 20,
+                runSpacing: 20,
                 alignment: WrapAlignment.center,
-                children: [
-                  _buildNavButton(
-                      context, 'Crop Management', CropManagementPage()),
-                  _buildNavButton(context, 'Livestock Management',
-                      LivestockManagementPage()),
-                  _buildNavButton(context, 'Farm Inputs', FarmInputsPage()),
-                  _buildNavButton(context, 'Labor Records', Home()),
-                ],
+                children: filteredItems.map((item) {
+                  return _buildNavButton(context, item['title'], item['page']);
+                }).toList(),
               ),
+
               SizedBox(height: 20),
 
               // Separate button for Financial Records
@@ -163,7 +187,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildNavButton(BuildContext context, String title, Widget page) {
     return SizedBox(
       width: 180,
-      height: 80,
+      height: 100,
       child: OutlinedButton(
         onPressed: () {
           Navigator.push(
@@ -187,8 +211,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFinancialRecordsButton(BuildContext context) {
     return SizedBox(
-      width: 380,
-      height: 80,
+      width: 375,
+      height: 100,
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
@@ -197,8 +221,7 @@ class _HomePageState extends State<HomePage> {
           );
         },
         style: ElevatedButton.styleFrom(
-          backgroundColor:
-              Colors.white, // Different color for Financial Records button
+          backgroundColor: Colors.white,
           side: BorderSide(color: Colors.green),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),

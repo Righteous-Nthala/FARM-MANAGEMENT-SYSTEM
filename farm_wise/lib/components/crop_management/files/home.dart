@@ -16,77 +16,49 @@ class CropManagementPage extends StatelessWidget {
     );
   }
 
+  Widget buildNavigationButton(BuildContext context, String title, Widget page) {
+    return SizedBox(
+      width: 300,  // Set fixed width for consistency
+      height: 120,  // Set fixed height for consistency
+      child: ElevatedButton(
+        onPressed: () => navigateToPage(context, page),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.white,
+          side: const BorderSide(color: Colors.green), // Border color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(7), // Rounded corners
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10), // Adjust padding as needed
+        ),
+        child: Text(
+          title,
+          style: const TextStyle(color: Colors.black, fontSize: 25),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Financial Records'),
+        title: const Text('Crop Management'),
       ),
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () => navigateToPage(context, FertilizerPage()),
-                child: Container(
-                  padding: const EdgeInsets.all(45),
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.white,
-                  child: const Text(
-                    'Fertilizer',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => navigateToPage(context, PesticidesPage()),
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.white,
-                  child: const Text(
-                    'Pesticides',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => navigateToPage(context, CropPage()),
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.white,
-                  child: const Text(
-                    'Crops',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => navigateToPage(context, rrigationPage()),
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.white,
-                  child: const Text(
-                    'Irrigation',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () => navigateToPage(context, SalesPage()),
-                child: Container(
-                  padding: const EdgeInsets.all(50),
-                  margin: const EdgeInsets.symmetric(vertical: 15),
-                  color: Colors.white,
-                  child: const Text(
-                    'Sales',
-                    style: TextStyle(color: Colors.black, fontSize: 18),
-                  ),
-                ),
-              ),
+              buildNavigationButton(context, 'Crops', CropRecordsPage()),
+              const SizedBox(height: 15),
+              buildNavigationButton(context, 'Pesticides', PesticidesRecordsPage()),
+              const SizedBox(height: 15),
+              buildNavigationButton(context, 'Fertilizer', FertilizerRecordsPage()),
+              const SizedBox(height: 15),
+              buildNavigationButton(context, 'Irrigation', IrrigationRecordsPage()),
+              const SizedBox(height: 15),
+              buildNavigationButton(context, 'Sales', SalesRecordsPage()),
             ],
           ),
         ),

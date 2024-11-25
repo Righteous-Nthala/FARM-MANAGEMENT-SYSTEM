@@ -1,7 +1,45 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPasswordPage extends StatelessWidget {
+class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
+
+  @override
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
+}
+
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final _emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  Future resetPassword() async {
+    try {
+      await FirebaseAuth.instance
+          .sendPasswordResetEmail(email: _emailController.text.trim());
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            content: Text("Password reset link sent! check your email"),
+          );
+        },
+      );
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              content: Text(e.message.toString()),
+            );
+          });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +83,18 @@ class ForgotPasswordPage extends StatelessWidget {
 
                 // Instruction Text
                 const Text(
-                  'Enter your phone number below, and we’ll send you instructions to reset your password.',
+                  'Enter your email address below, and we’ll send you  reset link for your password.',
                   style: TextStyle(fontSize: 16),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 30),
 
-                // Phone # Input Field with Icon
+                // Email Input Field with Icon
                 TextField(
+                  controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    prefixIcon: const Icon(Icons.phone),
+                    labelText: 'Email Address',
+                    prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -67,7 +106,7 @@ class ForgotPasswordPage extends StatelessWidget {
                 // Submit Button
                 ElevatedButton(
                   onPressed: () {
-                    // Code to initiate password recovery process
+                    resetPassword();
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                           content: Text("Password recovery link sent!")),
