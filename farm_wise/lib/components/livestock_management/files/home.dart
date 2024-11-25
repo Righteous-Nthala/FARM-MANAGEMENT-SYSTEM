@@ -1,10 +1,13 @@
 import 'package:farm_wise/components/livestock_management/files/breeding.dart';
 import 'package:farm_wise/components/livestock_management/files/feeding.dart';
-import 'package:farm_wise/components/livestock_management/files/parasitediseasecontrol.dart';
+import 'package:farm_wise/components/livestock_management/files/health.dart';
 import 'package:farm_wise/components/livestock_management/files/product.dart';
 import 'package:flutter/material.dart';
 import 'package:farm_wise/components/livestock_management/files/sales.dart';
 import 'package:farm_wise/components/livestock_management/files/animal.dart';
+import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
+
+
 
 class LivestockManagementPage extends StatelessWidget {
   const LivestockManagementPage({super.key});
@@ -150,7 +153,7 @@ class LivestockManagementPage extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ParasiteDiseaseControlPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Health()));
                   },
                 child:  Container(
                     width: 150,
@@ -176,7 +179,10 @@ class LivestockManagementPage extends StatelessWidget {
           ],
         ),
       ),
+      bottomNavigationBar: BottomNavBar(
+        currentIndex: 2,
+        onTabSelected: (int) {},
+      ),
     );
   }
 }
-
