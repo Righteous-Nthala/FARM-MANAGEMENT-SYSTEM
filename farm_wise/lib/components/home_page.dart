@@ -186,8 +186,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNavButton(BuildContext context, String title, Widget page) {
     return SizedBox(
-      width: 160,
-      height: 70,
+      width: 180,
+      height: 100,
       child: OutlinedButton(
         onPressed: () {
           Navigator.push(
@@ -211,8 +211,8 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildFinancialRecordsButton(BuildContext context) {
     return SizedBox(
-      width: 340,
-      height: 70,
+      width: 375,
+      height: 100,
       child: ElevatedButton(
         onPressed: () {
           Navigator.push(
