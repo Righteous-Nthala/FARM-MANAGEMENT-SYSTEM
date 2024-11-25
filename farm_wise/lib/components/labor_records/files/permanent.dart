@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class PermanentRecordsPage extends StatefulWidget {
-  const PermanentRecordsPage({Key? key}) : super(key: key);
+  const PermanentRecordsPage({super.key});
 
   @override
   _PermanentRecordsPageState createState() => _PermanentRecordsPageState();
@@ -11,7 +11,7 @@ class PermanentRecordsPage extends StatefulWidget {
 
 class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
   final CollectionReference permanentRecordsCollection =
-  FirebaseFirestore.instance.collection('permanent_records');
+      FirebaseFirestore.instance.collection('permanent_records');
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,9 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
       body: StreamBuilder(
         stream: permanentRecordsCollection.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text("Error: ${snapshot.error}"));
+          }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Column(
@@ -41,11 +44,11 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
               ),
             );
           } else {
-            return SingleChildScrollView(  // Make the table scrollable vertically
-              child: SingleChildScrollView(  // Allow horizontal scrolling
+            return SingleChildScrollView(
+              child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
-                  columnSpacing: 20,  // Slight increase in column spacing
+                  columnSpacing: 20,
                   columns: const [
                     DataColumn(label: Center(child: Text("No."))),
                     DataColumn(label: Center(child: Text("Name"))),
@@ -64,10 +67,10 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
 
                     return DataRow(
                       color: MaterialStateProperty.resolveWith(
-                            (states) => Colors.grey[350]!,
+                        (states) => Colors.grey[350],
                       ),
                       cells: [
-                        DataCell(Center(child: Text((index + 1).toString()))), // Row number
+                        DataCell(Center(child: Text((index + 1).toString()))),
                         DataCell(Center(child: Text(name))),
                         DataCell(Center(child: Text(age))),
                         DataCell(Center(child: Text(gender))),
@@ -120,10 +123,10 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
     String gender = '',
     String salary = '',
   }) async {
-    final _nameController = TextEditingController(text: name);
-    final _ageController = TextEditingController(text: age);
-    final _genderController = TextEditingController(text: gender);
-    final _salaryController = TextEditingController(text: salary);
+    final nameController = TextEditingController(text: name);
+    final ageController = TextEditingController(text: age);
+    final genderController = TextEditingController(text: gender);
+    final salaryController = TextEditingController(text: salary);
 
     await showDialog(
       context: context,
@@ -134,20 +137,20 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
+                controller: nameController,
                 decoration: const InputDecoration(labelText: "Name"),
               ),
               TextField(
-                controller: _ageController,
+                controller: ageController,
                 decoration: const InputDecoration(labelText: "Age"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _genderController,
+                controller: genderController,
                 decoration: const InputDecoration(labelText: "Gender"),
               ),
               TextField(
-                controller: _salaryController,
+                controller: salaryController,
                 decoration: const InputDecoration(labelText: "Salary (MWK)"),
                 keyboardType: TextInputType.number,
               ),
@@ -161,13 +164,11 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
           ),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context); // Close the dialog first
-
-              // Collecting values from the controllers
-              String name = _nameController.text.trim();
-              String age = _ageController.text.trim();
-              String gender = _genderController.text.trim();
-              String salary = _salaryController.text.trim();
+              Navigator.pop(context);
+              String name = nameController.text.trim();
+              String age = ageController.text.trim();
+              String gender = genderController.text.trim();
+              String salary = salaryController.text.trim();
 
               if (name.isEmpty || age.isEmpty || gender.isEmpty || salary.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -176,8 +177,8 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
                 return;
               }
 
-              // Check for duplicate record before adding
-              final duplicateExists = await _checkForDuplicateRecord(name, age, gender, salary, docId);
+              final duplicateExists =
+                  await _checkForDuplicateRecord(name, age, gender, salary, docId);
 
               if (duplicateExists) {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -221,7 +222,8 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
     await permanentRecordsCollection.doc(docId).delete();
   }
 
-  Future<bool> _checkForDuplicateRecord(String name, String age, String gender, String salary, String? docId) async {
+  Future<bool> _checkForDuplicateRecord(
+      String name, String age, String gender, String salary, String? docId) async {
     final querySnapshot = await permanentRecordsCollection
         .where('name', isEqualTo: name)
         .where('age', isEqualTo: int.parse(age))
@@ -231,10 +233,9 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
 
     for (var doc in querySnapshot.docs) {
       if (doc.id != docId) {
-        return true;  // Duplicate found
+        return true; // Duplicate found
       }
     }
-
-    return false;  // No duplicates
+    return false; // No duplicates
   }
 }

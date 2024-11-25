@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class TemporaryRecordsPage extends StatefulWidget {
-  const TemporaryRecordsPage({Key? key}) : super(key: key);
+  const TemporaryRecordsPage({super.key});
 
   @override
   _TemporaryRecordsPageState createState() => _TemporaryRecordsPageState();
@@ -11,7 +11,7 @@ class TemporaryRecordsPage extends StatefulWidget {
 
 class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
   final CollectionReference temporaryRecordsCollection =
-  FirebaseFirestore.instance.collection('temporary_records');
+      FirebaseFirestore.instance.collection('temporary_records');
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +26,9 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
       body: StreamBuilder(
         stream: temporaryRecordsCollection.snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
           if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
             return Center(
               child: Column(
@@ -41,73 +44,61 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
               ),
             );
           } else {
-            return SingleChildScrollView(  // Make the table scrollable vertically
-              child: SingleChildScrollView(  // Allow horizontal scrolling
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 20,  // Slight increase in column spacing
-                  columns: const [
-                    DataColumn(label: Center(child: Text("No."))),
-                    DataColumn(label: Center(child: Text("Name"))),
-                    DataColumn(label: Center(child: Text("Age"))),
-                    DataColumn(label: Center(child: Text("Gender"))),
-                    DataColumn(label: Center(child: Text("Assignment"))),
-                    DataColumn(label: Center(child: Text("Date Assigned"))),
-                    DataColumn(label: Center(child: Text("Due Date"))),
-                    DataColumn(label: Center(child: Text("Wage (MWK)"))),
-                    DataColumn(label: Center(child: Text("Actions"))),
-                  ],
-                  rows: List.generate(snapshot.data!.docs.length, (index) {
-                    final doc = snapshot.data!.docs[index];
-                    final data = doc.data() as Map<String, dynamic>;
-                    final String name = data['name'];
-                    final String age = data['age'].toString();
-                    final String gender = data['gender'];
-                    final String assignment = data['assignment'];
-                    final String dateAssigned = data['date_assigned'];
-                    final String dueDate = data['due_date'];
-                    final String wage = data['wage'].toString();
+            return SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 15,
+                columns: const [
+                  DataColumn(label: Text("No.")),
+                  DataColumn(label: Text("Name")),
+                  DataColumn(label: Text("Age")),
+                  DataColumn(label: Text("Gender")),
+                  DataColumn(label: Text("Assignment")),
+                  DataColumn(label: Text("Date Assigned")),
+                  DataColumn(label: Text("Due Date")),
+                  DataColumn(label: Text("Wage (MWK)")),
+                  DataColumn(label: Text("Actions")),
+                ],
+                rows: snapshot.data!.docs.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final doc = entry.value;
+                  final data = doc.data() as Map<String, dynamic>;
 
-                    return DataRow(
-                      color: MaterialStateProperty.resolveWith(
-                            (states) => Colors.grey[350]!,
-                      ),
-                      cells: [
-                        DataCell(Center(child: Text((index + 1).toString()))), // Row number
-                        DataCell(Center(child: Text(name))),
-                        DataCell(Center(child: Text(age))),
-                        DataCell(Center(child: Text(gender))),
-                        DataCell(Center(child: Text(assignment))),
-                        DataCell(Center(child: Text(dateAssigned))),
-                        DataCell(Center(child: Text(dueDate))),
-                        DataCell(Center(child: Text(wage))),
-                        DataCell(Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              icon: const Icon(Icons.edit, color: Colors.black),
-                              onPressed: () => _showAddRecordDialog(
-                                action: 'Edit',
-                                docId: doc.id,
-                                name: name,
-                                age: age,
-                                gender: gender,
-                                assignment: assignment,
-                                dateAssigned: dateAssigned,
-                                dueDate: dueDate,
-                                wage: wage,
-                              ),
+                  return DataRow(
+                    cells: [
+                      DataCell(Text((index + 1).toString())),
+                      DataCell(Text(data['name'] ?? "")),
+                      DataCell(Text(data['age'].toString())),
+                      DataCell(Text(data['gender'] ?? "")),
+                      DataCell(Text(data['assignment'] ?? "")),
+                      DataCell(Text(data['date_assigned'] ?? "")),
+                      DataCell(Text(data['due_date'] ?? "")),
+                      DataCell(Text(data['wage'].toString())),
+                      DataCell(Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () => _showAddRecordDialog(
+                              action: 'Edit',
+                              docId: doc.id,
+                              name: data['name'],
+                              age: data['age'].toString(),
+                              gender: data['gender'],
+                              assignment: data['assignment'],
+                              dateAssigned: data['date_assigned'],
+                              dueDate: data['due_date'],
+                              wage: data['wage'].toString(),
                             ),
-                            IconButton(
-                              icon: const Icon(Icons.delete, color: Colors.black),
-                              onPressed: () => _deleteRecord(doc.id),
-                            ),
-                          ],
-                        )),
-                      ],
-                    );
-                  }),
-                ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => _deleteRecord(doc.id),
+                          ),
+                        ],
+                      )),
+                    ],
+                  );
+                }).toList(),
               ),
             );
           }
@@ -135,13 +126,13 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
     String dueDate = '',
     String wage = '',
   }) async {
-    final _nameController = TextEditingController(text: name);
-    final _ageController = TextEditingController(text: age);
-    final _genderController = TextEditingController(text: gender);
-    final _assignmentController = TextEditingController(text: assignment);
-    final _dateAssignedController = TextEditingController(text: dateAssigned);
-    final _dueDateController = TextEditingController(text: dueDate);
-    final _wageController = TextEditingController(text: wage);
+    final nameController = TextEditingController(text: name);
+    final ageController = TextEditingController(text: age);
+    final genderController = TextEditingController(text: gender);
+    final assignmentController = TextEditingController(text: assignment);
+    final dateAssignedController = TextEditingController(text: dateAssigned);
+    final dueDateController = TextEditingController(text: dueDate);
+    final wageController = TextEditingController(text: wage);
 
     await showDialog(
       context: context,
@@ -149,83 +140,36 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
         title: Text("$action Record"),
         content: SingleChildScrollView(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: "Name"),
-              ),
-              TextField(
-                controller: _ageController,
-                decoration: const InputDecoration(labelText: "Age"),
-                keyboardType: TextInputType.number,
-              ),
-              TextField(
-                controller: _genderController,
-                decoration: const InputDecoration(labelText: "Gender"),
-              ),
-              TextField(
-                controller: _assignmentController,
-                decoration: const InputDecoration(labelText: "Assignment"),
-              ),
-              TextField(
-                controller: _dateAssignedController,
-                decoration: const InputDecoration(labelText: "Date Assigned"),
-              ),
-              TextField(
-                controller: _dueDateController,
-                decoration: const InputDecoration(labelText: "Due Date"),
-              ),
-              TextField(
-                controller: _wageController,
-                decoration: const InputDecoration(labelText: "Wage (MWK)"),
-                keyboardType: TextInputType.number,
-              ),
+              TextField(controller: nameController, decoration: const InputDecoration(labelText: "Name")),
+              TextField(controller: ageController, decoration: const InputDecoration(labelText: "Age"), keyboardType: TextInputType.number),
+              TextField(controller: genderController, decoration: const InputDecoration(labelText: "Gender")),
+              TextField(controller: assignmentController, decoration: const InputDecoration(labelText: "Assignment")),
+              TextField(controller: dateAssignedController, decoration: const InputDecoration(labelText: "Date Assigned")),
+              TextField(controller: dueDateController, decoration: const InputDecoration(labelText: "Due Date")),
+              TextField(controller: wageController, decoration: const InputDecoration(labelText: "Wage"), keyboardType: TextInputType.number),
             ],
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
-          ),
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Cancel")),
           ElevatedButton(
             onPressed: () async {
-              Navigator.pop(context); // Close the dialog first
-
-              // Collecting values from the controllers
-              String name = _nameController.text.trim();
-              String age = _ageController.text.trim();
-              String gender = _genderController.text.trim();
-              String assignment = _assignmentController.text.trim();
-              String dateAssigned = _dateAssignedController.text.trim();
-              String dueDate = _dueDateController.text.trim();
-              String wage = _wageController.text.trim();
-
-              if (name.isEmpty || age.isEmpty || gender.isEmpty || assignment.isEmpty ||
-                  dateAssigned.isEmpty || dueDate.isEmpty || wage.isEmpty) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Please fill in all fields")),
-                );
-                return;
-              }
-
-              // Check for duplicate record before adding
-              final duplicateExists = await _checkForDuplicateRecord(
-                  name, age, gender, assignment, dateAssigned, dueDate, wage, docId
-              );
-
-              if (duplicateExists) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("This record already exists")),
-                );
-                return;
-              }
+              Navigator.pop(context);
+              final record = {
+                'name': nameController.text.trim(),
+                'age': int.parse(ageController.text.trim()),
+                'gender': genderController.text.trim(),
+                'assignment': assignmentController.text.trim(),
+                'date_assigned': dateAssignedController.text.trim(),
+                'due_date': dueDateController.text.trim(),
+                'wage': int.parse(wageController.text.trim()),
+              };
 
               if (action == 'Add') {
-                await _addRecord(name, age, gender, assignment, dateAssigned, dueDate, wage);
+                await _addRecord(record);
               } else {
-                await _editRecord(docId!, name, age, gender, assignment, dateAssigned, dueDate, wage);
+                await _editRecord(docId!, record);
               }
             },
             child: const Text("Save"),
@@ -235,55 +179,27 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
     );
   }
 
-  Future<void> _addRecord(String name, String age, String gender, String assignment,
-      String dateAssigned, String dueDate, String wage) async {
-    await temporaryRecordsCollection.add({
-      'name': name,
-      'age': int.parse(age),
-      'gender': gender,
-      'assignment': assignment,
-      'date_assigned': dateAssigned,
-      'due_date': dueDate,
-      'wage': int.parse(wage),
-    });
+  Future<void> _addRecord(Map<String, dynamic> record) async {
+    try {
+      await temporaryRecordsCollection.add(record);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error adding record: $e")));
+    }
   }
 
-  Future<void> _editRecord(String docId, String name, String age, String gender, String assignment,
-      String dateAssigned, String dueDate, String wage) async {
-    await temporaryRecordsCollection.doc(docId).update({
-      'name': name,
-      'age': int.parse(age),
-      'gender': gender,
-      'assignment': assignment,
-      'date_assigned': dateAssigned,
-      'due_date': dueDate,
-      'wage': int.parse(wage),
-    });
+  Future<void> _editRecord(String docId, Map<String, dynamic> record) async {
+    try {
+      await temporaryRecordsCollection.doc(docId).update(record);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error updating record: $e")));
+    }
   }
 
   Future<void> _deleteRecord(String docId) async {
-    await temporaryRecordsCollection.doc(docId).delete();
-  }
-
-  Future<bool> _checkForDuplicateRecord(
-      String name, String age, String gender, String assignment,
-      String dateAssigned, String dueDate, String wage, String? docId) async {
-    final querySnapshot = await temporaryRecordsCollection
-        .where('name', isEqualTo: name)
-        .where('age', isEqualTo: int.parse(age))
-        .where('gender', isEqualTo: gender)
-        .where('assignment', isEqualTo: assignment)
-        .where('date_assigned', isEqualTo: dateAssigned)
-        .where('due_date', isEqualTo: dueDate)
-        .where('wage', isEqualTo: int.parse(wage))
-        .get();
-
-    for (var doc in querySnapshot.docs) {
-      if (doc.id != docId) {
-        return true;  // Duplicate found
-      }
+    try {
+      await temporaryRecordsCollection.doc(docId).delete();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error deleting record: $e")));
     }
-
-    return false;  // No duplicates
   }
 }
