@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class AnimalTypePage extends StatefulWidget {
   final String animalName;
 
-  const AnimalTypePage({Key? key, required this.animalName}) : super(key: key);
+  const AnimalTypePage({super.key, required this.animalName});
 
   @override
   State<AnimalTypePage> createState() => _AnimalTypePageState();
@@ -51,7 +50,7 @@ class _AnimalTypePageState extends State<AnimalTypePage> {
                 scrollDirection: Axis.horizontal,
                 child: DataTable(
                   columns: const [
-                    DataColumn(label: Center(child: Text("No."))),
+                    DataColumn(label: Center(child: Text("Row #"))),
                     DataColumn(label: Center(child: Text("ID"))),  // Swapped ID and Breed columns
                     DataColumn(label: Center(child: Text("Breed"))),  // Swapped Breed and ID columns
                     DataColumn(label: Center(child: Text("Gender"))),
@@ -66,7 +65,10 @@ class _AnimalTypePageState extends State<AnimalTypePage> {
                     final data = doc.data() as Map<String, dynamic>;
 
                     return DataRow(
-                      color: MaterialStateProperty.all(Colors.grey[350]),
+                      color: WidgetStateProperty.resolveWith(
+                              (states) => index % 2 == 0
+                              ? Colors.grey[200]
+                              : Colors.white),
                       cells: [
                         DataCell(Center(child: Text(index.toString()))),
                         DataCell(Center(child: Text(data['id'] ?? 'Unknown'))),  // Swapped ID and Breed data
@@ -103,10 +105,6 @@ class _AnimalTypePageState extends State<AnimalTypePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddOrEditRecordDialog('Add'),
         child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 2,
-        onTabSelected: (int) {},
       ),
     );
   }

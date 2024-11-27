@@ -1,7 +1,6 @@
 import 'package:farm_wise/components/livestock_management/files/specificproduct.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class Product extends StatefulWidget {
   const Product({super.key});
@@ -93,10 +92,6 @@ class _ProductState extends State<Product> {
         onPressed: _showAddProductDialog,
         child: const Icon(Icons.add),
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 2,
-        onTabSelected: (int) {},
-      ),
     );
   }
 
@@ -139,12 +134,9 @@ class _ProductState extends State<Product> {
                       await _addProduct(productName);
                     }
                   } else {
-                    // Show the error message after closing the dialog
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Product name cannot be empty")),
-                      );
-                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Product name cannot be empty")),
+                    );
                   }
                 },
                 child: const Text("Add"),
