@@ -1,81 +1,239 @@
 import 'package:flutter/material.dart';
-import 'package:farm_wise/components/livestock_management/files/observedparasitedisease.dart';
-import 'package:farm_wise/components/livestock_management/files/parasitediseasecontrol.dart';
-import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-class Health extends StatelessWidget {
+class ParasiteDiseaseRecordsPage extends StatefulWidget {
+  const ParasiteDiseaseRecordsPage({super.key});
+
+  @override
+  _ParasiteDiseaseRecordsPageState createState() =>
+      _ParasiteDiseaseRecordsPageState();
+}
+
+class _ParasiteDiseaseRecordsPageState
+    extends State<ParasiteDiseaseRecordsPage> {
+  final CollectionReference parasiteDiseaseRecordsCollection =
+  FirebaseFirestore.instance.collection('parasite_disease_records');
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Health Records'),
+        title: const Text(
+          'Parasite & Disease Records',
+          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),
+        ),
         centerTitle: true,
-        titleTextStyle: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 30.0,
-          color: Colors.black,
-        ),
       ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ParasiteDiseaseRecordsPage()));
-              },
-            child:  Container(
-                margin: EdgeInsets.fromLTRB(30.0, 200.0, 10.0, 10.0),
-                width: 350,
-                height: 130,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 3, color: Colors.green),
-                ),
-                child: Center(
-                  child: Text(
-                    'Parasite & Disease Observation',
-                    style: TextStyle(
-                      fontSize: 23.0,
-                      fontWeight: FontWeight.normal,
-                    ),
+      body: StreamBuilder(
+        stream: parasiteDiseaseRecordsCollection.snapshots(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("No parasite/disease records found"),
+                  const SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: _showAddParasiteDiseaseRecordDialog,
+                    child: const Text("Add Parasite/Disease Record"),
                   ),
+                ],
+              ),
+            );
+          } else {
+            return SingleChildScrollView(  // Make the table scrollable vertically
+              child: SingleChildScrollView(  // Allow horizontal scrolling
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  columnSpacing: 20,  // Slight increase in column spacing
+                  columns: const [
+                    DataColumn(label: Center(child: Text("No"))),
+                    DataColumn(label: Center(child: Text("Parasite/Disease"))),
+                    DataColumn(label: Center(child: Text("Severity"))),
+                    DataColumn(label: Center(child: Text("Date Observed"))),
+                    DataColumn(label: Center(child: Text("Animal + ID"))),
+                    DataColumn(label: Center(child: Text("Actions"))),
+                  ],
+                  rows: List.generate(snapshot.data!.docs.length, (index) {
+                    final doc = snapshot.data!.docs[index];
+                    final data = doc.data() as Map<String, dynamic>;
+                    final String parasiteDisease = data['parasite_disease'];
+                    final String severity = data['severity'];
+                    final String dateObserved = data['date_observed'];
+                    final String animalId = data['animal_id'];
+
+                    return DataRow(
+                      color: WidgetStateProperty.resolveWith(
+                            (states) => Colors.grey[200]!,
+                      ),
+                      cells: [
+                        DataCell(Center(child: Text('${index + 1}'))),  // Row number (No)
+                        DataCell(Center(child: Text(parasiteDisease))),
+                        DataCell(Center(child: Text(severity))),
+                        DataCell(Center(child: Text(dateObserved))),
+                        DataCell(Center(child: Text(animalId))),
+                        DataCell(Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, color: Colors.black),
+                              onPressed: () => _showAddParasiteDiseaseRecordDialog(
+                                action: 'Edit',
+                                docId: doc.id,
+                                parasiteDisease: parasiteDisease,
+                                severity: severity,
+                                dateObserved: dateObserved,
+                                animalId: animalId,
+                              ),
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, color: Colors.black),
+                              onPressed: () => _deleteParasiteDiseaseRecord(doc.id),
+                            ),
+                          ],
+                        )),
+                      ],
+                    );
+                  }),
                 ),
               ),
-
-            ),
-            InkWell(
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context)=>ParasiteDiseaseControlPage()));
-              },
-            child:  Container(
-                margin: EdgeInsets.fromLTRB(30.0, 40.0, 10.0, 10.0),
-                width: 350,
-                height: 130,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(width: 3, color: Colors.green),
-                ),
-                child: Center(
-                  child: Text(
-                    'Treatment',
-                    style: TextStyle(
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-          ],
-        ),
+            );
+          }
+        },
       ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 2,
-        onTabSelected: (int) {},
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddParasiteDiseaseRecordDialog,
+        child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _showAddParasiteDiseaseRecordDialog({
+    String action = 'Add',
+    String? docId,
+    String parasiteDisease = '',
+    String severity = '',
+    String dateObserved = '',
+    String animalId = '',
+  }) async {
+    final parasiteDiseaseController = TextEditingController(text: parasiteDisease);
+    final severityController = TextEditingController(text: severity);
+    final dateObservedController = TextEditingController(text: dateObserved);
+    final animalIdController = TextEditingController(text: animalId);
+
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("$action Parasite/Disease Record"),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: parasiteDiseaseController,
+                decoration: const InputDecoration(labelText: "Parasite/Disease"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: severityController,
+                decoration: const InputDecoration(labelText: "Severity"),
+                textCapitalization: TextCapitalization.words,
+              ),
+              TextField(
+                controller: dateObservedController,
+                decoration: const InputDecoration(labelText: "Date Observed"),
+              ),
+              TextField(
+                controller: animalIdController,
+                decoration: const InputDecoration(labelText: "Animal ID"),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.pop(context); // Close the dialog first
+
+              // Collecting values from the controllers
+              String parasiteDisease = _capitalizeFirstLetter(parasiteDiseaseController.text.trim());
+              String severity = _capitalizeFirstLetter(severityController.text.trim());
+              String dateObserved = dateObservedController.text.trim();
+              String animalId = animalIdController.text.trim();
+
+              bool duplicateExists = await _checkForDuplicateParasiteDiseaseRecord(
+                  parasiteDisease, severity, dateObserved, animalId, docId
+              );
+
+              if (duplicateExists) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("This record already exists")),
+                );
+                return;
+              }
+
+              if (action == 'Add') {
+                await _addParasiteDiseaseRecord(parasiteDisease, severity, dateObserved, animalId);
+              } else {
+                await _editParasiteDiseaseRecord(
+                    docId!, parasiteDisease, severity, dateObserved, animalId);
+              }
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String _capitalizeFirstLetter(String input) {
+    if (input.isEmpty) return input;
+    return input[0].toUpperCase() + input.substring(1);
+  }
+
+  Future<void> _addParasiteDiseaseRecord(
+      String parasiteDisease, String severity, String dateObserved, String animalId) async {
+    await parasiteDiseaseRecordsCollection.add({
+      'parasite_disease': parasiteDisease,
+      'severity': severity,
+      'date_observed': dateObserved,
+      'animal_id': animalId,
+    });
+  }
+
+  Future<void> _editParasiteDiseaseRecord(
+      String docId, String parasiteDisease, String severity, String dateObserved, String animalId) async {
+    await parasiteDiseaseRecordsCollection.doc(docId).update({
+      'parasite_disease': parasiteDisease,
+      'severity': severity,
+      'date_observed': dateObserved,
+      'animal_id': animalId,
+    });
+  }
+
+  Future<void> _deleteParasiteDiseaseRecord(String docId) async {
+    await parasiteDiseaseRecordsCollection.doc(docId).delete();
+  }
+
+  Future<bool> _checkForDuplicateParasiteDiseaseRecord(
+      String parasiteDisease, String severity, String dateObserved, String animalId, String? docId) async {
+    final querySnapshot = await parasiteDiseaseRecordsCollection
+        .where('parasite_disease', isEqualTo: parasiteDisease)
+        .where('severity', isEqualTo: severity)
+        .where('date_observed', isEqualTo: dateObserved)
+        .where('animal_id', isEqualTo: animalId)
+        .get();
+
+    for (var doc in querySnapshot.docs) {
+      if (doc.id != docId) {
+        return true; // Duplicate found
+      }
+    }
+    return false; // No duplicates
   }
 }

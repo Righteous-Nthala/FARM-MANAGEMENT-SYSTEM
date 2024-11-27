@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/livestock_management/files/animaltype.dart';
-import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class Animal extends StatefulWidget {
   const Animal({super.key});
@@ -92,10 +91,6 @@ class _AnimalState extends State<Animal> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddAnimalDialog,
         child: const Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: 2,
-        onTabSelected: (int) {},
       ),
     );
   }
