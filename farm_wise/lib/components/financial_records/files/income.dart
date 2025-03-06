@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class IncomeRecordsPage extends StatefulWidget {
-  const IncomeRecordsPage({Key? key}) : super(key: key);
+  const IncomeRecordsPage({super.key});
 
   @override
   _IncomeRecordsPageState createState() => _IncomeRecordsPageState();
@@ -61,7 +61,7 @@ class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
                     final String date = data['date'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[350]!,
                       ),
                       cells: [
@@ -115,9 +115,9 @@ class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
     String amount = '',
     String date = '',
   }) async {
-    final _sourceController = TextEditingController(text: source);
-    final _amountController = TextEditingController(text: amount);
-    final _dateController = TextEditingController(text: date);
+    final sourceController = TextEditingController(text: source);
+    final amountController = TextEditingController(text: amount);
+    final dateController = TextEditingController(text: date);
 
     await showDialog(
       context: context,
@@ -128,16 +128,16 @@ class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _sourceController,
+                controller: sourceController,
                 decoration: const InputDecoration(labelText: "Source"),
               ),
               TextField(
-                controller: _amountController,
+                controller: amountController,
                 decoration: const InputDecoration(labelText: "Amount (MWK)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _dateController,
+                controller: dateController,
                 decoration: const InputDecoration(labelText: "Date"),
               ),
             ],
@@ -153,9 +153,9 @@ class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String source = _sourceController.text.trim();
-              String amount = _amountController.text.trim();
-              String date = _dateController.text.trim();
+              String source = sourceController.text.trim();
+              String amount = amountController.text.trim();
+              String date = dateController.text.trim();
 
               if (source.isEmpty || amount.isEmpty || date.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(

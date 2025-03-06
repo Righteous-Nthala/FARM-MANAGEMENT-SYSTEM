@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class IrrigationRecordsPage extends StatefulWidget {
-  const IrrigationRecordsPage({Key? key}) : super(key: key);
+  const IrrigationRecordsPage({super.key});
 
   @override
   _IrrigationRecordsPageState createState() => _IrrigationRecordsPageState();
@@ -61,7 +61,7 @@ class _IrrigationRecordsPageState extends State<IrrigationRecordsPage> {
                     final String crop = data['crop'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                               (states) => Colors.grey[350]!
                       ),
                       cells: [
@@ -115,9 +115,9 @@ class _IrrigationRecordsPageState extends State<IrrigationRecordsPage> {
     String date = '',
     String crop = '',
   }) async {
-    final _methodController = TextEditingController(text: method);
-    final _dateController = TextEditingController(text: date);
-    final _cropController = TextEditingController(text: crop);
+    final methodController = TextEditingController(text: method);
+    final dateController = TextEditingController(text: date);
+    final cropController = TextEditingController(text: crop);
 
     await showDialog(
       context: context,
@@ -128,15 +128,15 @@ class _IrrigationRecordsPageState extends State<IrrigationRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _methodController,
+                controller: methodController,
                 decoration: const InputDecoration(labelText: "Method"),
               ),
               TextField(
-                controller: _dateController,
+                controller: dateController,
                 decoration: const InputDecoration(labelText: "Date"),
               ),
               TextField(
-                controller: _cropController,
+                controller: cropController,
                 decoration: const InputDecoration(labelText: "Crop"),
               ),
             ],
@@ -152,9 +152,9 @@ class _IrrigationRecordsPageState extends State<IrrigationRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String method = _methodController.text.trim();
-              String date = _dateController.text.trim();
-              String crop = _cropController.text.trim();
+              String method = methodController.text.trim();
+              String date = dateController.text.trim();
+              String crop = cropController.text.trim();
 
               if (method.isEmpty || date.isEmpty || crop.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(

@@ -66,7 +66,7 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
                     final String salary = data['salary'].toString();
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                         (states) => Colors.grey[350],
                       ),
                       cells: [

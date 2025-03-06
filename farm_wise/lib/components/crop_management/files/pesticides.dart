@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class PesticidesRecordsPage extends StatefulWidget {
-  const PesticidesRecordsPage({Key? key}) : super(key: key);
+  const PesticidesRecordsPage({super.key});
 
   @override
   _PesticidesRecordsPageState createState() => _PesticidesRecordsPageState();
@@ -63,7 +63,7 @@ class _PesticidesRecordsPageState extends State<PesticidesRecordsPage> {
                     final String crop = data['crop'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                               (states) => Colors.grey[350]!
                       ),
                       cells: [
@@ -120,10 +120,10 @@ class _PesticidesRecordsPageState extends State<PesticidesRecordsPage> {
     String applicationDate = '',
     String crop = '',
   }) async {
-    final _typeController = TextEditingController(text: type);
-    final _quantityController = TextEditingController(text: quantity);
-    final _applicationDateController = TextEditingController(text: applicationDate);
-    final _cropController = TextEditingController(text: crop);
+    final typeController = TextEditingController(text: type);
+    final quantityController = TextEditingController(text: quantity);
+    final applicationDateController = TextEditingController(text: applicationDate);
+    final cropController = TextEditingController(text: crop);
 
     await showDialog(
       context: context,
@@ -134,19 +134,19 @@ class _PesticidesRecordsPageState extends State<PesticidesRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _typeController,
+                controller: typeController,
                 decoration: const InputDecoration(labelText: "Type"),
               ),
               TextField(
-                controller: _quantityController,
+                controller: quantityController,
                 decoration: const InputDecoration(labelText: "Quantity"),
               ),
               TextField(
-                controller: _applicationDateController,
+                controller: applicationDateController,
                 decoration: const InputDecoration(labelText: "Application Date"),
               ),
               TextField(
-                controller: _cropController,
+                controller: cropController,
                 decoration: const InputDecoration(labelText: "Crop"),
               ),
             ],
@@ -162,10 +162,10 @@ class _PesticidesRecordsPageState extends State<PesticidesRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String type = _typeController.text.trim();
-              String quantity = _quantityController.text.trim();
-              String applicationDate = _applicationDateController.text.trim();
-              String crop = _cropController.text.trim();
+              String type = typeController.text.trim();
+              String quantity = quantityController.text.trim();
+              String applicationDate = applicationDateController.text.trim();
+              String crop = cropController.text.trim();
 
               if (type.isEmpty || quantity.isEmpty || applicationDate.isEmpty || crop.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(

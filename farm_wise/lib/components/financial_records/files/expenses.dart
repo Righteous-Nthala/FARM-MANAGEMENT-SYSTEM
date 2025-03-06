@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class ExpenditureRecordsPage extends StatefulWidget {
-  const ExpenditureRecordsPage({Key? key}) : super(key: key);
+  const ExpenditureRecordsPage({super.key});
 
   @override
   _ExpenditureRecordsPageState createState() => _ExpenditureRecordsPageState();
@@ -61,7 +61,7 @@ class _ExpenditureRecordsPageState extends State<ExpenditureRecordsPage> {
                     final String date = data['date'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[350]!,
                       ),
                       cells: [
@@ -115,9 +115,9 @@ class _ExpenditureRecordsPageState extends State<ExpenditureRecordsPage> {
     String amount = '',
     String date = '',
   }) async {
-    final _expenditureTypeController = TextEditingController(text: expenditureType);
-    final _amountController = TextEditingController(text: amount);
-    final _dateController = TextEditingController(text: date);
+    final expenditureTypeController = TextEditingController(text: expenditureType);
+    final amountController = TextEditingController(text: amount);
+    final dateController = TextEditingController(text: date);
 
     await showDialog(
       context: context,
@@ -128,16 +128,16 @@ class _ExpenditureRecordsPageState extends State<ExpenditureRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _expenditureTypeController,
+                controller: expenditureTypeController,
                 decoration: const InputDecoration(labelText: "Expenditure Type"),
               ),
               TextField(
-                controller: _amountController,
+                controller: amountController,
                 decoration: const InputDecoration(labelText: "Amount (MWK)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _dateController,
+                controller: dateController,
                 decoration: const InputDecoration(labelText: "Date"),
               ),
             ],
@@ -153,9 +153,9 @@ class _ExpenditureRecordsPageState extends State<ExpenditureRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String expenditureType = _expenditureTypeController.text.trim();
-              String amount = _amountController.text.trim();
-              String date = _dateController.text.trim();
+              String expenditureType = expenditureTypeController.text.trim();
+              String amount = amountController.text.trim();
+              String date = dateController.text.trim();
 
               if (expenditureType.isEmpty || amount.isEmpty || date.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(

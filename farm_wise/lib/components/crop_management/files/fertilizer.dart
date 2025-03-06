@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class FertilizerRecordsPage extends StatefulWidget {
-  const FertilizerRecordsPage({Key? key}) : super(key: key);
+  const FertilizerRecordsPage({super.key});
 
   @override
   _FertilizerRecordsPageState createState() => _FertilizerRecordsPageState();
@@ -64,7 +64,7 @@ class _FertilizerRecordsPageState extends State<FertilizerRecordsPage> {
                     final String crop = data['crop'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                               (states) => Colors.grey[350]!),
                       cells: [
                         DataCell(Center(child: Text(rowNumber))), // Row number
@@ -120,10 +120,10 @@ class _FertilizerRecordsPageState extends State<FertilizerRecordsPage> {
     String applicationDate = '',
     String crop = '',
   }) async {
-    final _typeController = TextEditingController(text: type);
-    final _quantityController = TextEditingController(text: quantity);
-    final _applicationDateController = TextEditingController(text: applicationDate);
-    final _cropController = TextEditingController(text: crop);
+    final typeController = TextEditingController(text: type);
+    final quantityController = TextEditingController(text: quantity);
+    final applicationDateController = TextEditingController(text: applicationDate);
+    final cropController = TextEditingController(text: crop);
 
     await showDialog(
       context: context,
@@ -134,20 +134,20 @@ class _FertilizerRecordsPageState extends State<FertilizerRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _typeController,
+                controller: typeController,
                 decoration: const InputDecoration(labelText: "Type"),
               ),
               TextField(
-                controller: _quantityController,
+                controller: quantityController,
                 decoration: const InputDecoration(labelText: "Quantity (kg)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _applicationDateController,
+                controller: applicationDateController,
                 decoration: const InputDecoration(labelText: "Application Date"),
               ),
               TextField(
-                controller: _cropController,
+                controller: cropController,
                 decoration: const InputDecoration(labelText: "Crop"),
               ),
             ],
@@ -163,10 +163,10 @@ class _FertilizerRecordsPageState extends State<FertilizerRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String type = _typeController.text.trim();
-              String quantity = _quantityController.text.trim();
-              String applicationDate = _applicationDateController.text.trim();
-              String crop = _cropController.text.trim();
+              String type = typeController.text.trim();
+              String quantity = quantityController.text.trim();
+              String applicationDate = applicationDateController.text.trim();
+              String crop = cropController.text.trim();
 
               if (type.isEmpty || quantity.isEmpty || applicationDate.isEmpty || crop.isEmpty) {
                 ScaffoldMessenger.of(context).showSnackBar(

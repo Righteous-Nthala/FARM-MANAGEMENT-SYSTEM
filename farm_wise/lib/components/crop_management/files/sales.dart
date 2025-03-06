@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class SalesRecordsPage extends StatefulWidget {
-  const SalesRecordsPage({Key? key}) : super(key: key);
+  const SalesRecordsPage({super.key});
 
   @override
   _SalesRecordsPageState createState() => _SalesRecordsPageState();
@@ -67,7 +67,7 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
                     final String buyerContact = data['buyer_contact'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                             (states) => Colors.grey[350]!,
                       ),
                       cells: [
@@ -130,12 +130,12 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
     String buyerName = '',
     String buyerContact = '',
   }) async {
-    final _salesIdController = TextEditingController(text: salesId);
-    final _cropIdController = TextEditingController(text: cropId);
-    final _cropNameController = TextEditingController(text: cropName);
-    final _salesDateController = TextEditingController(text: salesDate);
-    final _buyerNameController = TextEditingController(text: buyerName);
-    final _buyerContactController = TextEditingController(text: buyerContact);
+    final salesIdController = TextEditingController(text: salesId);
+    final cropIdController = TextEditingController(text: cropId);
+    final cropNameController = TextEditingController(text: cropName);
+    final salesDateController = TextEditingController(text: salesDate);
+    final buyerNameController = TextEditingController(text: buyerName);
+    final buyerContactController = TextEditingController(text: buyerContact);
 
     await showDialog(
       context: context,
@@ -146,27 +146,27 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _salesIdController,
+                controller: salesIdController,
                 decoration: const InputDecoration(labelText: "Sales ID"),
               ),
               TextField(
-                controller: _cropIdController,
+                controller: cropIdController,
                 decoration: const InputDecoration(labelText: "Crop ID"),
               ),
               TextField(
-                controller: _cropNameController,
+                controller: cropNameController,
                 decoration: const InputDecoration(labelText: "Crop Name"),
               ),
               TextField(
-                controller: _salesDateController,
+                controller: salesDateController,
                 decoration: const InputDecoration(labelText: "Sales Date"),
               ),
               TextField(
-                controller: _buyerNameController,
+                controller: buyerNameController,
                 decoration: const InputDecoration(labelText: "Buyer Name"),
               ),
               TextField(
-                controller: _buyerContactController,
+                controller: buyerContactController,
                 decoration: const InputDecoration(labelText: "Buyer Contact"),
               ),
             ],
@@ -182,12 +182,12 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String salesId = _salesIdController.text.trim();
-              String cropId = _cropIdController.text.trim();
-              String cropName = _cropNameController.text.trim();
-              String salesDate = _salesDateController.text.trim();
-              String buyerName = _buyerNameController.text.trim();
-              String buyerContact = _buyerContactController.text.trim();
+              String salesId = salesIdController.text.trim();
+              String cropId = cropIdController.text.trim();
+              String cropName = cropNameController.text.trim();
+              String salesDate = salesDateController.text.trim();
+              String buyerName = buyerNameController.text.trim();
+              String buyerContact = buyerContactController.text.trim();
 
               if (salesId.isEmpty || cropId.isEmpty || cropName.isEmpty ||
                   salesDate.isEmpty || buyerName.isEmpty || buyerContact.isEmpty) {

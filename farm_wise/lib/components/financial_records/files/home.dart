@@ -5,6 +5,8 @@ import 'package:farm_wise/components/financial_records/files/expenses.dart';
 import 'package:farm_wise/components/financial_records/files/analysis.dart';
 
 class FinancialRecordsPage extends StatelessWidget {
+  const FinancialRecordsPage({super.key});
+
 
   @override
   Widget build(BuildContext context) {

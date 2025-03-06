@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class AnnualAnalysisPage extends StatefulWidget {
+  const AnnualAnalysisPage({super.key});
+
   @override
   _AnnualAnalysisPageState createState() => _AnnualAnalysisPageState();
 }
@@ -141,7 +143,7 @@ class _AnnualAnalysisPageState extends State<AnnualAnalysisPage> {
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),

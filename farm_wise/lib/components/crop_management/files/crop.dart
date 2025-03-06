@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class CropRecordsPage extends StatefulWidget {
-  const CropRecordsPage({Key? key}) : super(key: key);
+  const CropRecordsPage({super.key});
 
   @override
   _CropRecordsPageState createState() => _CropRecordsPageState();
@@ -73,7 +73,7 @@ class _CropRecordsPageState extends State<CropRecordsPage> {
                     final String dateHarvested = data['date_harvested'];
 
                     return DataRow(
-                      color: MaterialStateProperty.resolveWith(
+                      color: WidgetStateProperty.resolveWith(
                               (states) => Colors.grey[350]!),
                       cells: [
                         DataCell(Center(child: Text((index + 1).toString()))), // Row number
@@ -144,15 +144,15 @@ class _CropRecordsPageState extends State<CropRecordsPage> {
     String quantityHarvested = '',
     String dateHarvested = '',
   }) async {
-    final _idController = TextEditingController(text: id);
-    final _nameController = TextEditingController(text: name);
-    final _varietyController = TextEditingController(text: variety);
-    final _amountController = TextEditingController(text: amount);
-    final _datePlantedController = TextEditingController(text: datePlanted);
-    final _plotNoController = TextEditingController(text: plotNo);
-    final _estimatedHarvestController = TextEditingController(text: estimatedHarvest);
-    final _quantityHarvestedController = TextEditingController(text: quantityHarvested);
-    final _dateHarvestedController = TextEditingController(text: dateHarvested);
+    final idController = TextEditingController(text: id);
+    final nameController = TextEditingController(text: name);
+    final varietyController = TextEditingController(text: variety);
+    final amountController = TextEditingController(text: amount);
+    final datePlantedController = TextEditingController(text: datePlanted);
+    final plotNoController = TextEditingController(text: plotNo);
+    final estimatedHarvestController = TextEditingController(text: estimatedHarvest);
+    final quantityHarvestedController = TextEditingController(text: quantityHarvested);
+    final dateHarvestedController = TextEditingController(text: dateHarvested);
 
     await showDialog(
       context: context,
@@ -163,42 +163,42 @@ class _CropRecordsPageState extends State<CropRecordsPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _idController,
+                controller: idController,
                 decoration: const InputDecoration(labelText: "ID"),
               ),
               TextField(
-                controller: _nameController,
+                controller: nameController,
                 decoration: const InputDecoration(labelText: "Name"),
               ),
               TextField(
-                controller: _varietyController,
+                controller: varietyController,
                 decoration: const InputDecoration(labelText: "Variety"),
               ),
               TextField(
-                controller: _amountController,
+                controller: amountController,
                 decoration: const InputDecoration(labelText: "Amount of Seeds (kg)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _datePlantedController,
+                controller: datePlantedController,
                 decoration: const InputDecoration(labelText: "Date Planted"),
               ),
               TextField(
-                controller: _plotNoController,
+                controller: plotNoController,
                 decoration: const InputDecoration(labelText: "Plot No."),
               ),
               TextField(
-                controller: _estimatedHarvestController,
+                controller: estimatedHarvestController,
                 decoration: const InputDecoration(labelText: "Estimated Harvest Quantity (kg)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _quantityHarvestedController,
+                controller: quantityHarvestedController,
                 decoration: const InputDecoration(labelText: "Quantity Harvested (kg)"),
                 keyboardType: TextInputType.number,
               ),
               TextField(
-                controller: _dateHarvestedController,
+                controller: dateHarvestedController,
                 decoration: const InputDecoration(labelText: "Date Harvested"),
               ),
             ],
@@ -214,15 +214,15 @@ class _CropRecordsPageState extends State<CropRecordsPage> {
               Navigator.pop(context); // Close the dialog first
 
               // Collecting values from the controllers
-              String id = _idController.text.trim();
-              String name = _nameController.text.trim();
-              String variety = _varietyController.text.trim();
-              String amount = _amountController.text.trim();
-              String datePlanted = _datePlantedController.text.trim();
-              String plotNo = _plotNoController.text.trim();
-              String estimatedHarvest = _estimatedHarvestController.text.trim();
-              String quantityHarvested = _quantityHarvestedController.text.trim();
-              String dateHarvested = _dateHarvestedController.text.trim();
+              String id = idController.text.trim();
+              String name = nameController.text.trim();
+              String variety = varietyController.text.trim();
+              String amount = amountController.text.trim();
+              String datePlanted = datePlantedController.text.trim();
+              String plotNo = plotNoController.text.trim();
+              String estimatedHarvest = estimatedHarvestController.text.trim();
+              String quantityHarvested = quantityHarvestedController.text.trim();
+              String dateHarvested = dateHarvestedController.text.trim();
 
               if (id.isEmpty || name.isEmpty || variety.isEmpty ||
                   amount.isEmpty || datePlanted.isEmpty || plotNo.isEmpty ||
