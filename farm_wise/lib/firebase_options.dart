@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -48,6 +45,7 @@ class DefaultFirebaseOptions {
         );
     }
   }
+
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyBwJMWsfK1WkLBeF38yMB6HvzsfvjKrE6Q',
     appId: '1:720570909629:android:f9d65ba5dcbded239288d4',
@@ -62,6 +60,17 @@ class DefaultFirebaseOptions {
     messagingSenderId: '720570909629',
     projectId: 'farmwise-93a2e',
     storageBucket: 'farmwise-93a2e.firebasestorage.app',
+    iosClientId: '720570909629-jp7dmqa7utmji9j7p3sru9e7bfhj26bs.apps.googleusercontent.com',
     iosBundleId: 'com.example.farmWise',
   );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyBNOtUKQxjnPxmd64iOaT7XcvmdEr_xfcU',
+    appId: '1:720570909629:web:6d2223197b1a96079288d4',
+    messagingSenderId: '720570909629',
+    projectId: 'farmwise-93a2e',
+    authDomain: 'farmwise-93a2e.firebaseapp.com',
+    storageBucket: 'farmwise-93a2e.firebasestorage.app',
+  );
+
 }

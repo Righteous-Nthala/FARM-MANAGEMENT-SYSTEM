@@ -12,7 +12,12 @@
           "package_name": "com.example.farm_wise"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "720570909629-bos0vmtddflljupevhrr66b78cikn39g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBwJMWsfK1WkLBeF38yMB6HvzsfvjKrE6Q"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "720570909629-bos0vmtddflljupevhrr66b78cikn39g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "720570909629-jp7dmqa7utmji9j7p3sru9e7bfhj26bs.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.farmWise"
+              }
+            }
+          ]
         }
       }
     }

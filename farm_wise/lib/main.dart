@@ -2,12 +2,17 @@ import 'package:farm_wise/components/home_page.dart';
 import 'package:farm_wise/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:device_preview/device_preview.dart';
 import 'landing_page.dart';
 
 void main() async { 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(AgricultureApp());
+  runApp(DevicePreview(
+    builder: (context) {
+      return AgricultureApp();
+    },
+  ));
 }
 
 class AgricultureApp extends StatelessWidget {
