@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PermanentRecordsPage extends StatefulWidget {
   const PermanentRecordsPage({super.key});
@@ -10,8 +11,17 @@ class PermanentRecordsPage extends StatefulWidget {
 }
 
 class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
-  final CollectionReference permanentRecordsCollection =
-      FirebaseFirestore.instance.collection('permanent_records');
+  late final CollectionReference<Map<String, dynamic>> permanentRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    permanentRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('permanent_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,6 +216,7 @@ class _PermanentRecordsPageState extends State<PermanentRecordsPage> {
       'age': int.parse(age),
       'gender': gender,
       'salary': int.parse(salary),
+      'userId': currentUserId,
     });
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class FeedingRecordsPage extends StatefulWidget {
   const FeedingRecordsPage({super.key});
@@ -9,8 +10,17 @@ class FeedingRecordsPage extends StatefulWidget {
 }
 
 class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
-  final CollectionReference feedingRecordsCollection =
-  FirebaseFirestore.instance.collection('feeding_records');
+  late final CollectionReference<Map<String, dynamic>> feedingRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    feedingRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('feeding_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +234,7 @@ class _FeedingRecordsPageState extends State<FeedingRecordsPage> {
       'amount': amount,
       'labor': labor,
       'animal': animal,
+      'userId': currentUserId,
     });
   }
 

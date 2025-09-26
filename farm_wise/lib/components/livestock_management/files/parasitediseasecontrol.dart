@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ParasiteDiseaseControlPage extends StatefulWidget {
   const ParasiteDiseaseControlPage({super.key});
@@ -9,8 +10,17 @@ class ParasiteDiseaseControlPage extends StatefulWidget {
 }
 
 class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage> {
-  final CollectionReference controlRecordsCollection =
-  FirebaseFirestore.instance.collection('parasite_disease_control');
+  late final CollectionReference<Map<String, dynamic>> controlRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    controlRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('parasite_disease_control');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +203,7 @@ class _ParasiteDiseaseControlPageState extends State<ParasiteDiseaseControlPage>
       'target': target,
       'veterinary': veterinary,
       'animal_id': animalId,
+      'userId': currentUserId,
     });
   }
 

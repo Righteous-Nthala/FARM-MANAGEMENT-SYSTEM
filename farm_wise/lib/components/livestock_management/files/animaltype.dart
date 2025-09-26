@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AnimalTypePage extends StatefulWidget {
   final String animalName;
@@ -11,8 +12,17 @@ class AnimalTypePage extends StatefulWidget {
 }
 
 class _AnimalTypePageState extends State<AnimalTypePage> {
-  final CollectionReference animalRecords =
-  FirebaseFirestore.instance.collection('animalRecords');
+  late final CollectionReference<Map<String, dynamic>> animalRecords;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    animalRecords = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('animalRecords');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -212,6 +222,7 @@ class _AnimalTypePageState extends State<AnimalTypePage> {
       'birth_date': birthDate,
       'acquisition_date': acquisitionDate,
       'origin': origin,
+      'userId': currentUserId,
     });
   }
 

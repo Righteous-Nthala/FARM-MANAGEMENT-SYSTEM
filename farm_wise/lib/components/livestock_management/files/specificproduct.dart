@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Specificproduct extends StatefulWidget {
   final String productId;
@@ -11,8 +12,17 @@ class Specificproduct extends StatefulWidget {
 }
 
 class _SpecificproductState extends State<Specificproduct> {
-  final CollectionReference detailsCollection =
-  FirebaseFirestore.instance.collection('product_details');
+  late final CollectionReference<Map<String, dynamic>> detailsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    detailsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('product_details');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,6 +198,7 @@ class _SpecificproductState extends State<Specificproduct> {
       'highQuality': highQuality,
       'lowQuality': lowQuality,
       'damages': damages,
+      'userId': currentUserId,
     });
   }
 

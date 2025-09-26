@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'utils/base_page.dart';
+import 'profile_page.dart';
 import 'crop_management/files/home.dart';
 import 'livestock_management/files/home.dart';
 import 'farm_inputs/files/home.dart';
@@ -122,7 +123,10 @@ class _HomePageState extends State<HomePage> {
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
-                // Add functionality for profile icon if needed
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                );
               },
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:farm_wise/components/livestock_management/files/specificproduct.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Product extends StatefulWidget {
   const Product({super.key});
@@ -10,8 +11,17 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-  final CollectionReference productsCollection =
-  FirebaseFirestore.instance.collection('products');
+  late final CollectionReference<Map<String, dynamic>> productsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    productsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('products');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,6 +168,7 @@ class _ProductState extends State<Product> {
   Future<void> _addProduct(String name) async {
     await productsCollection.add({
       'name': name,
+      'userId': currentUserId,
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Product added successfully")),

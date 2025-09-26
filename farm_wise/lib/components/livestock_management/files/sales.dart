@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SalesRecordsPage extends StatefulWidget {
   const SalesRecordsPage({super.key});
@@ -9,8 +10,17 @@ class SalesRecordsPage extends StatefulWidget {
 }
 
 class _SalesRecordsPageState extends State<SalesRecordsPage> {
-  final CollectionReference salesRecordsCollection =
-  FirebaseFirestore.instance.collection('sales_records');
+  late final CollectionReference<Map<String, dynamic>> salesRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    salesRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('sales_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,6 +218,7 @@ class _SalesRecordsPageState extends State<SalesRecordsPage> {
       'total_income': totalIncome,
       'customer': customer,
       'date': date,
+      'userId': currentUserId,
     });
   }
 

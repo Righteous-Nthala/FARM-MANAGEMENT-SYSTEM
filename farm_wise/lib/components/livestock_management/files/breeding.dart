@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class BreedingRecordsPage extends StatefulWidget {
   const BreedingRecordsPage({super.key});
@@ -9,8 +10,17 @@ class BreedingRecordsPage extends StatefulWidget {
 }
 
 class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
-  final CollectionReference breedingRecordsCollection =
-  FirebaseFirestore.instance.collection('breeding_records');
+  late final CollectionReference<Map<String, dynamic>> breedingRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    breedingRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('breeding_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -278,6 +288,7 @@ class _BreedingRecordsPageState extends State<BreedingRecordsPage> {
       'offspring_breed': offspringBreed,
       'offspring_gender': offspringGender,
       'offspring_status': offspringStatus,
+      'userId': currentUserId,
     });
   }
 

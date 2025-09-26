@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class TemporaryRecordsPage extends StatefulWidget {
   const TemporaryRecordsPage({super.key});
@@ -10,8 +11,17 @@ class TemporaryRecordsPage extends StatefulWidget {
 }
 
 class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
-  final CollectionReference temporaryRecordsCollection =
-      FirebaseFirestore.instance.collection('temporary_records');
+  late final CollectionReference<Map<String, dynamic>> temporaryRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    temporaryRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('temporary_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +174,7 @@ class _TemporaryRecordsPageState extends State<TemporaryRecordsPage> {
                 'date_assigned': dateAssignedController.text.trim(),
                 'due_date': dueDateController.text.trim(),
                 'wage': int.parse(wageController.text.trim()),
+                'userId': currentUserId,
               };
 
               if (action == 'Add') {

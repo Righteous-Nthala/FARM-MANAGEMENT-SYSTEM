@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:farm_wise/components/livestock_management/files/animaltype.dart';
 
 class Animal extends StatefulWidget {
@@ -10,8 +11,17 @@ class Animal extends StatefulWidget {
 }
 
 class _AnimalState extends State<Animal> {
-  final CollectionReference animalsCollection =
-  FirebaseFirestore.instance.collection('animals');
+  late final CollectionReference<Map<String, dynamic>> animalsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    animalsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('animals');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -175,6 +185,7 @@ class _AnimalState extends State<Animal> {
     await animalsCollection.add({
       'type': type,
       'name': name,
+      'userId': currentUserId,
     });
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Animal added successfully")),

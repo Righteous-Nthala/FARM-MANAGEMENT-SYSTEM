@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
 
 class IncomeRecordsPage extends StatefulWidget {
@@ -10,8 +11,17 @@ class IncomeRecordsPage extends StatefulWidget {
 }
 
 class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
-  final CollectionReference incomeRecordsCollection =
-  FirebaseFirestore.instance.collection('income_records');
+  late final CollectionReference<Map<String, dynamic>> incomeRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    incomeRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('income_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,6 +203,7 @@ class _IncomeRecordsPageState extends State<IncomeRecordsPage> {
       'source': source,
       'amount': int.parse(amount),
       'date': date,
+      'userId': currentUserId,
     });
   }
 

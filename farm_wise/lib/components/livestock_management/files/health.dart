@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ParasiteDiseaseRecordsPage extends StatefulWidget {
   const ParasiteDiseaseRecordsPage({super.key});
@@ -11,8 +12,17 @@ class ParasiteDiseaseRecordsPage extends StatefulWidget {
 
 class _ParasiteDiseaseRecordsPageState
     extends State<ParasiteDiseaseRecordsPage> {
-  final CollectionReference parasiteDiseaseRecordsCollection =
-  FirebaseFirestore.instance.collection('parasite_disease_records');
+  late final CollectionReference<Map<String, dynamic>> parasiteDiseaseRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    parasiteDiseaseRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('parasite_disease_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -203,6 +213,7 @@ class _ParasiteDiseaseRecordsPageState
       'severity': severity,
       'date_observed': dateObserved,
       'animal_id': animalId,
+      'userId': currentUserId,
     });
   }
 

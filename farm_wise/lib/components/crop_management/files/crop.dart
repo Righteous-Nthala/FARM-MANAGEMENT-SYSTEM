@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:farm_wise/components/utils/bottom_nav_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class CropRecordsPage extends StatefulWidget {
   const CropRecordsPage({super.key});
@@ -10,8 +11,17 @@ class CropRecordsPage extends StatefulWidget {
 }
 
 class _CropRecordsPageState extends State<CropRecordsPage> {
-  final CollectionReference cropRecordsCollection =
-  FirebaseFirestore.instance.collection('crop_records');
+  late final CollectionReference<Map<String, dynamic>> cropRecordsCollection;
+  final String currentUserId = FirebaseAuth.instance.currentUser!.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    cropRecordsCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(currentUserId)
+        .collection('crop_records');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -273,6 +283,7 @@ class _CropRecordsPageState extends State<CropRecordsPage> {
       'estimated_harvest': estimatedHarvest,
       'quantity_harvested': quantityHarvested,
       'date_harvested': dateHarvested,
+      'userId': currentUserId,
     });
   }
 
