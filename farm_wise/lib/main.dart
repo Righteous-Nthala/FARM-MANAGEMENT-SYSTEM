@@ -7,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'landing_page.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:io' show Platform;
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -15,7 +17,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 void main() async { 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  final bool supportsFcm = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+  if (supportsFcm) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  }
   runApp(DevicePreview(
     builder: (context) {
       return AgricultureApp();
@@ -39,6 +44,9 @@ class _AuthGate extends StatelessWidget {
   const _AuthGate();
 
   Future<void> _initMessagingForUser(User user) async {
+    final bool supportsFcm = !kIsWeb && (Platform.isAndroid || Platform.isIOS);
+    if (!supportsFcm) return;
+
     final messaging = FirebaseMessaging.instance;
     await messaging.requestPermission();
     final token = await messaging.getToken();

@@ -28,24 +28,45 @@ class NotificationsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           final docs = snapshot.data?.docs ?? [];
-          if (docs.isEmpty) {
-            return const Center(child: Text('No new notifications.'));
-          }
-          return ListView.separated(
-            itemCount: docs.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final data = docs[index].data();
-              return ListTile(
-                leading: const Icon(Icons.notifications),
-                title: Text(data['title'] ?? 'Notification'),
-                subtitle: Text(data['body'] ?? ''),
-                trailing: Text(
-                  (data['createdAt'] as Timestamp?)?.toDate().toLocal().toString().split('.').first ?? '',
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Notifications'),
+              actions: [
+                IconButton(
+                  tooltip: 'Add test notification',
+                  icon: const Icon(Icons.add_alert),
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user.uid)
+                        .collection('notifications')
+                        .add({
+                      'title': 'Test notification',
+                      'body': 'This is a local test entry.',
+                      'createdAt': FieldValue.serverTimestamp(),
+                    });
+                  },
                 ),
-              );
-            },
+              ],
+            ),
+            body: docs.isEmpty
+                ? const Center(child: Text('No new notifications.'))
+                : ListView.separated(
+                    itemCount: docs.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final data = docs[index].data();
+                      return ListTile(
+                        leading: const Icon(Icons.notifications),
+                        title: Text(data['title'] ?? 'Notification'),
+                        subtitle: Text(data['body'] ?? ''),
+                        trailing: Text(
+                          (data['createdAt'] as Timestamp?)?.toDate().toLocal().toString().split('.').first ?? '',
+                          style: const TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
+                      );
+                    },
+                  ),
           );
         },
       ),
